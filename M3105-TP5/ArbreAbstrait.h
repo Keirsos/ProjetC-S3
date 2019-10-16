@@ -17,7 +17,7 @@ class Noeud {
 // Classe abstraite dont dériveront toutes les classes servant à représenter l'arbre abstrait
 // Remarque : la classe ne contient aucun constructeur
   public:
-    virtual int  executer() =0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
+    virtual int executer() =0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
 };
@@ -94,13 +94,26 @@ private :
 
 class NoeudInstRepeter : public Noeud {
 public :
-    NoeudInstRepeter(Noeud* sequence,Noeud* condition);
+    NoeudInstRepeter(Noeud* sequence, Noeud* condition);
     
     ~NoeudInstRepeter(){}
     int executer() override;
 private :
     Noeud* m_sequence;
     Noeud* m_condition;
+};
+
+class NoeudInstPour: public Noeud {
+public :
+    NoeudInstPour(Noeud* affectation1, Noeud* expression, Noeud* affectation2, Noeud* sequence);
+    
+    ~NoeudInstPour(){}
+    int executer() override;
+private :
+    Noeud* m_affectation1;
+    Noeud* m_expression;
+    Noeud* m_affectation2;
+    Noeud* m_sequence;
 };
 
 #endif /* ARBREABSTRAIT_H */

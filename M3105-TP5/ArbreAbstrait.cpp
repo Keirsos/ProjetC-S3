@@ -90,7 +90,7 @@ int NoeudInstTantQue::executer() {
 }
 
 NoeudInstRepeter::NoeudInstRepeter(Noeud* sequence, Noeud* condition)
-: m_condition(condition), m_sequence(sequence) {
+: m_sequence(sequence), m_condition(condition) {
 }
 
 int NoeudInstRepeter::executer() {
@@ -99,5 +99,29 @@ int NoeudInstRepeter::executer() {
             m_sequence->executer();
         while(!m_condition->executer());
     }
+  return 0; // La valeur renvoyée ne représente rien !
+}
+
+NoeudInstPour::NoeudInstPour(Noeud* affectation1, Noeud* expression, Noeud* affectation2, Noeud* sequence)
+: m_affectation1(affectation1), m_expression(expression), m_affectation2(affectation2), m_sequence(sequence) {
+}
+
+int NoeudInstPour::executer() {
+    if (m_affectation1 != nullptr){
+        cout << "salut_1" << endl;
+        m_affectation1->executer();
+    }
+    for (;m_expression->executer();) {
+        m_sequence->executer();
+        if (m_affectation2 != nullptr)m_affectation2->executer();
+    }
+    
+//    if(m_affectation1 != nullptr) m_affectation1->executer();
+//    while(m_expression->executer()){
+////        cout << "coucou" << endl;
+//        m_sequence->executer();
+//        if(m_affectation2 != nullptr) m_affectation2->executer();
+    //}
+    
   return 0; // La valeur renvoyée ne représente rien !
 }

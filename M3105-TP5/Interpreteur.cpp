@@ -23,6 +23,11 @@ void Interpreteur::tester(const string & symboleAttendu) const {
   }
 }
 
+bool Interpreteur::testerBool(const string & symboleAttendu) const {
+  // Teste si le symbole courant est égal au symboleAttendu... en booléen
+  return (m_lecteur.getSymbole() == symboleAttendu);
+}
+
 void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
   // Teste si le symbole courant est égal au symboleAttendu... Si oui, avance, Sinon, lève une exception
   tester(symboleAttendu);
@@ -54,10 +59,10 @@ Noeud* Interpreteur::programme() {
 Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
-  vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter"};
+  vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter","pour"};
   do {
     sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter");
+  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour");
 //  while (find(listeInst.begin(), listeInst.end(), m_lecteur.getSymbole()) != listeInst.end());
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
@@ -77,6 +82,8 @@ Noeud* Interpreteur::inst() {
       return instTantQue();
   else if (m_lecteur.getSymbole() == "repeter")
       return instRepeter();
+  else if (m_lecteur.getSymbole() == "pour")
+      return instPour();
   // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
   else {
       erreur("Instruction incorrecte");
@@ -163,6 +170,29 @@ Noeud* Interpreteur::instRepeter() {
     testerEtAvancer("(");
     Noeud* condition = expression();
     testerEtAvancer(")");
-    return nullptr;
-//    return new NoeudInstRepeter(sequence, condition);
+    return new NoeudInstRepeter(sequence, condition);
+}
+
+Noeud* Interpreteur::instPour(){
+    Noeud* affect1;
+    Noeud* affect2;
+    
+    testerEtAvancer("pour");
+    testerEtAvancer("(");
+    if (testerBool("k")){
+        cout << "AAAAAAH" << endl;
+        Noeud* affect1 = affectation();
+    }
+    testerEtAvancer(";");
+    Noeud* expre = expression();
+    testerEtAvancer(";");
+    if (testerBool("k")){
+        cout << "AAAAAAH2" << endl;
+        Noeud* affect2 = affectation();
+    }
+    testerEtAvancer(")");
+    Noeud* sequence = seqInst();
+    testerEtAvancer("finpour");
+    
+    return new NoeudInstPour(affect1, expre, affect2, sequence);
 }

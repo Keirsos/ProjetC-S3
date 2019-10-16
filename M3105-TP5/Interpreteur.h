@@ -41,11 +41,14 @@ private:
     
     Noeud* instTantQue();
     Noeud* instRepeter();
+    Noeud* instPour();
 
     // outils pour simplifier l'analyse syntaxique
     void tester (const string & symboleAttendu) const;   // Si symbole courant != symboleAttendu, on lève une exception
     void testerEtAvancer(const string & symboleAttendu); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
     void erreur (const string & mess) const;             // Lève une exception "contenant" le message mess
+
+    bool testerBool(const string & symboleAttendu) const;
 };
 
 #endif /* INTERPRETEUR_H */
