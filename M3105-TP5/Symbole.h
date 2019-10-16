@@ -14,7 +14,8 @@ public:
 	inline bool operator != (const string  & ch) const { return ! (*this == ch); } // Pour tester la différence...
 	inline const string & getChaine() const { return m_chaine;} // Accesseur
 	friend ostream & operator <<(ostream & cout, const Symbole & symbole); // Fonction amie pour pouvoir afficher un symbole sur cout 
-
+//        operator==(std::string s) const;
+//        operator==(Symbole s) const;
 private:
     	enum m_categorie { MOTCLE, VARIABLE, ENTIER, CHAINE, INDEFINI, FINDEFICHIER };
 	string           m_chaine;             // Chaîne du symbole
@@ -22,5 +23,13 @@ private:
 	bool             isMotCle(const string & s) const;  // Renvoie vrai si s est un mot clé du langage
         static const char * FICHIER_MOTS_CLES; // Le fichier des mots clés du langage
 };
+//
+//bool Symbole::operator==(std::string) const{
+//    return m_chaine == s;
+//}
+//
+//bool Symbole::operator==(Symbole s) const{
+//    return m_chaine == s.getChaine();
+//}
 
 #endif /* SYMBOLE_H */

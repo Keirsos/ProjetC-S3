@@ -28,7 +28,5 @@ int main(int argc, char* argv[]) {
     } catch (InterpreteurException & e) {
         cout << e.what() << endl;
     }
-    
-    cout << "bite" << endl;
     return 0;
 }
