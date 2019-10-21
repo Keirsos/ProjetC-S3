@@ -1,12 +1,19 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
-    i = 12+3;
+    i = 15;
     j = 0;
+    m = 0;
     l = 0;
     k = 1;
     si (i>14)
-        j=1;
+        m=1;
+    sinonsi (i>10)
+        m=2;
+    sinonsi (i>5)
+        m=3;
+    sinon
+        m=0;
     finsi
     tantque (i<20)
         i = i+1;

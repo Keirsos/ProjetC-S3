@@ -76,8 +76,10 @@ Noeud* Interpreteur::inst() {
     testerEtAvancer(";");
     return affect;
   }
+//  else if (m_lecteur.getSymbole() == "si")
+//    return instSi();
   else if (m_lecteur.getSymbole() == "si")
-    return instSi();
+      return instSiRiche();
   else if (m_lecteur.getSymbole() == "tantque")
       return instTantQue();
   else if (m_lecteur.getSymbole() == "repeter")
@@ -142,16 +144,16 @@ Noeud* Interpreteur::facteur() {
   return fact;
 }
 
-Noeud* Interpreteur::instSi() {
-  // <instSi> ::= si ( <expression> ) <seqInst> finsi
-  testerEtAvancer("si");
-  testerEtAvancer("(");
-  Noeud* condition = expression(); // On mémorise la condition
-  testerEtAvancer(")");
-  Noeud* sequence = seqInst();     // On mémorise la séquence d'instruction
-  testerEtAvancer("finsi");
-  return new NoeudInstSi(condition, sequence); // Et on renvoie un noeud Instruction Si
-}
+//Noeud* Interpreteur::instSi() {
+//  // <instSi> ::= si ( <expression> ) <seqInst> finsi
+//  testerEtAvancer("si");
+//  testerEtAvancer("(");
+//  Noeud* condition = expression(); // On mémorise la condition
+//  testerEtAvancer(")");
+//  Noeud* sequence = seqInst();     // On mémorise la séquence d'instruction
+//  testerEtAvancer("finsi");
+//  return new NoeudInstSi(condition, sequence); // Et on renvoie un noeud Instruction Si
+//}
 
 Noeud* Interpreteur::instTantQue() {
     testerEtAvancer("tantque");
@@ -180,24 +182,42 @@ Noeud* Interpreteur::instPour(){
     testerEtAvancer("pour");
     testerEtAvancer("(");
     if (testerBool("k")){
-        cout << "AAAAAAH" << endl;
         affect1 = affectation();
     }
     testerEtAvancer(";");
     Noeud* expre = expression();
     testerEtAvancer(";");
     if (testerBool("k")){
-        cout << "AAAAAAH2" << endl;
         affect2 = affectation();
     }
     testerEtAvancer(")");
     Noeud* sequence = seqInst();
     testerEtAvancer("finpour");
     
-    cout << affect1 << endl;
-    if(affect1 == nullptr){
-        cout << "bouh" << endl;
-    }
-    
     return new NoeudInstPour(affect1, expre, affect2, sequence);
+}
+
+Noeud* Interpreteur::instSiRiche(){
+    vector<Noeud*> expressions;
+    vector<Noeud*> sequences;
+    
+    testerEtAvancer("si");
+    testerEtAvancer("(");
+    expressions.push_back(expression());
+    testerEtAvancer(")");
+    sequences.push_back(seqInst());
+    while(testerBool("sinonsi")){
+        testerEtAvancer("sinonsi");
+        testerEtAvancer("(");
+        expressions.push_back(expression());
+        testerEtAvancer(")");
+        sequences.push_back(seqInst());
+    }
+    if(testerBool("sinon")){
+        testerEtAvancer("sinon");
+        sequences.push_back(seqInst());
+    }
+    testerEtAvancer("finsi");
+    
+    return new NoeudInstSiRiche(expressions, sequences);
 }

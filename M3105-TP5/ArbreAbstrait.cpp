@@ -30,7 +30,6 @@ NoeudAffectation::NoeudAffectation(Noeud* variable, Noeud* expression)
 }
 
 int NoeudAffectation::executer() {
-    cout << "Affectation:executer" << endl;
   int valeur = m_expression->executer(); // On exécute (évalue) l'expression
   ((SymboleValue*) m_variable)->setValeur(valeur); // On affecte la variable
   return 0; // La valeur renvoyée ne représente rien !
@@ -72,14 +71,14 @@ int NoeudOperateurBinaire::executer() {
 // NoeudInstSi
 ////////////////////////////////////////////////////////////////////////////////
 
-NoeudInstSi::NoeudInstSi(Noeud* condition, Noeud* sequence)
-: m_condition(condition), m_sequence(sequence) {
-}
-
-int NoeudInstSi::executer() {
-  if (m_condition->executer()) m_sequence->executer();
-  return 0; // La valeur renvoyée ne représente rien !
-}
+//NoeudInstSi::NoeudInstSi(Noeud* condition, Noeud* sequence)
+//: m_condition(condition), m_sequence(sequence) {
+//}
+//
+//int NoeudInstSi::executer() {
+//  if (m_condition->executer()) m_sequence->executer();
+//  return 0; // La valeur renvoyée ne représente rien !
+//}
 
 NoeudInstTantQue::NoeudInstTantQue(Noeud* condition, Noeud* sequence)
 : m_condition(condition), m_sequence(sequence) {
@@ -116,4 +115,19 @@ int NoeudInstPour::executer() {
     }
     
     return 0; // La valeur renvoyée ne représente rien !
+}
+
+NoeudInstSiRiche::NoeudInstSiRiche(std::vector<Noeud*> expressions, std::vector<Noeud*> sequences)
+: m_expressions(expressions), m_sequences(sequences){
+}
+
+int NoeudInstSiRiche::executer(){
+    
+    int i = 0;
+    while(i < m_expressions.size() && !m_expressions.at(i)->executer()){
+        i++;
+    }
+    m_sequences.at(i)->executer();
+    
+    return 0;
 }

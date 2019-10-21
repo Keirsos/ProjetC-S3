@@ -72,19 +72,19 @@ class NoeudOperateurBinaire : public Noeud {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class NoeudInstSi : public Noeud {
-// Classe pour représenter un noeud "instruction si"
-//  et ses 2 fils : la condition du si et la séquence d'instruction associée
-  public:
-    NoeudInstSi(Noeud* condition, Noeud* sequence);
-     // Construit une "instruction si" avec sa condition et sa séquence d'instruction
-   ~NoeudInstSi() {}         // A cause du destructeur virtuel de la classe Noeud
-    int executer() override; // Exécute l'instruction si : si condition vraie on exécute la séquence
-
-  private:
-    Noeud*  m_condition;
-    Noeud*  m_sequence;
-};
+//class NoeudInstSi : public Noeud {
+//// Classe pour représenter un noeud "instruction si"
+////  et ses 2 fils : la condition du si et la séquence d'instruction associée
+//  public:
+//    NoeudInstSi(Noeud* condition, Noeud* sequence);
+//     // Construit une "instruction si" avec sa condition et sa séquence d'instruction
+//   ~NoeudInstSi() {}         // A cause du destructeur virtuel de la classe Noeud
+//    int executer() override; // Exécute l'instruction si : si condition vraie on exécute la séquence
+//
+//  private:
+//    Noeud*  m_condition;
+//    Noeud*  m_sequence;
+//};
 
 class NoeudInstTantQue : public Noeud {
 public :
@@ -119,6 +119,17 @@ private :
     Noeud* m_expression;
     Noeud* m_affectation2;
     Noeud* m_sequence;
+};
+
+class NoeudInstSiRiche: public Noeud {
+public :
+    NoeudInstSiRiche(std::vector<Noeud*> expressions, std::vector<Noeud*> sequences);
+    
+    ~NoeudInstSiRiche(){}
+    int executer() override;
+private :
+    std::vector<Noeud*> m_expressions;
+    std::vector<Noeud*> m_sequences;
 };
 
 #endif /* ARBREABSTRAIT_H */

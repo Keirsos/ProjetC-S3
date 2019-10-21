@@ -36,12 +36,13 @@ private:
     Noeud*  expression();  //  <expression> ::= <facteur> { <opBinaire> <facteur> }
     Noeud*  facteur();     //     <facteur> ::= <entier>  |  <variable>  |  - <facteur>  | non <facteur> | ( <expression> )
                            //   <opBinaire> ::= + | - | *  | / | < | > | <= | >= | == | != | et | ou
-    Noeud*  instSi();      //      <instSi> ::= si ( <expression> ) <seqInst> finsi
+    //Noeud*  instSi();      //      <instSi> ::= si ( <expression> ) <seqInst> finsi
     
     
     Noeud* instTantQue();
     Noeud* instRepeter();
     Noeud* instPour();
+    Noeud* instSiRiche();
 
     // outils pour simplifier l'analyse syntaxique
     void tester (const string & symboleAttendu) const;   // Si symbole courant != symboleAttendu, on lève une exception
