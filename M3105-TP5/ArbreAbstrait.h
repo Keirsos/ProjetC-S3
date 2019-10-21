@@ -13,6 +13,7 @@ using namespace std;
 #include "Exceptions.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+
 class Noeud {
 // Classe abstraite dont dériveront toutes les classes servant à représenter l'arbre abstrait
 // Remarque : la classe ne contient aucun constructeur
@@ -23,6 +24,7 @@ class Noeud {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
 class NoeudSeqInst : public Noeud {
 // Classe pour représenter un noeud "sequence d'instruction"
 //  qui a autant de fils que d'instructions dans la séquence
@@ -37,6 +39,7 @@ class NoeudSeqInst : public Noeud {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
 class NoeudAffectation : public Noeud {
 // Classe pour représenter un noeud "affectation"
 //  composé de 2 fils : la variable et l'expression qu'on lui affecte
@@ -51,6 +54,7 @@ class NoeudAffectation : public Noeud {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
 class NoeudOperateurBinaire : public Noeud {
 // Classe pour représenter un noeud "opération binaire" composé d'un opérateur
 //  et de 2 fils : l'opérande gauche et l'opérande droit
@@ -67,6 +71,7 @@ class NoeudOperateurBinaire : public Noeud {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
 class NoeudInstSi : public Noeud {
 // Classe pour représenter un noeud "instruction si"
 //  et ses 2 fils : la condition du si et la séquence d'instruction associée
