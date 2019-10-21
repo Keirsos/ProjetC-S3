@@ -121,7 +121,7 @@ int NoeudInstPour::executer() {
 ////        cout << "coucou" << endl;
 //        m_sequence->executer();
 //        if(m_affectation2 != nullptr) m_affectation2->executer();
-    //}
+//}
     
   return 0; // La valeur renvoyée ne représente rien !
 }
