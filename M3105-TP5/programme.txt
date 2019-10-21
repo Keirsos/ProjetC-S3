@@ -4,6 +4,7 @@ procedure principale()
     i = 12+3;
     j = 0;
     l = 0;
+    k = 1;
     si (i>14)
         j=1;
     finsi
@@ -16,9 +17,9 @@ procedure principale()
     pour (k=1;k<=5;k=k+1)
         l = l+k;
     finpour
-#   pour (;k<=5;)
-#       l = l+k;
-#       k=k+1;
-#   finpour
+    pour (;k<=5;)
+        l = l+k;
+        k=k+1;
+    finpour
 finproc
 # Commentaire Final

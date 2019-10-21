@@ -174,25 +174,30 @@ Noeud* Interpreteur::instRepeter() {
 }
 
 Noeud* Interpreteur::instPour(){
-    Noeud* affect1;
-    Noeud* affect2;
+    Noeud* affect1 = nullptr;
+    Noeud* affect2 = nullptr;
     
     testerEtAvancer("pour");
     testerEtAvancer("(");
     if (testerBool("k")){
         cout << "AAAAAAH" << endl;
-        Noeud* affect1 = affectation();
+        affect1 = affectation();
     }
     testerEtAvancer(";");
     Noeud* expre = expression();
     testerEtAvancer(";");
     if (testerBool("k")){
         cout << "AAAAAAH2" << endl;
-        Noeud* affect2 = affectation();
+        affect2 = affectation();
     }
     testerEtAvancer(")");
     Noeud* sequence = seqInst();
     testerEtAvancer("finpour");
+    
+    cout << affect1 << endl;
+    if(affect1 == nullptr){
+        cout << "bouh" << endl;
+    }
     
     return new NoeudInstPour(affect1, expre, affect2, sequence);
 }

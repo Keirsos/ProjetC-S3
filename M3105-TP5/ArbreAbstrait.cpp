@@ -30,6 +30,7 @@ NoeudAffectation::NoeudAffectation(Noeud* variable, Noeud* expression)
 }
 
 int NoeudAffectation::executer() {
+    cout << "Affectation:executer" << endl;
   int valeur = m_expression->executer(); // On exécute (évalue) l'expression
   ((SymboleValue*) m_variable)->setValeur(valeur); // On affecte la variable
   return 0; // La valeur renvoyée ne représente rien !
@@ -107,21 +108,12 @@ NoeudInstPour::NoeudInstPour(Noeud* affectation1, Noeud* expression, Noeud* affe
 }
 
 int NoeudInstPour::executer() {
-    if (m_affectation1 != nullptr){
-        cout << "salut_1" << endl;
-        m_affectation1->executer();
-    }
-    for (;m_expression->executer();) {
+    
+    if(m_affectation1 != nullptr) m_affectation1->executer();
+    while(m_expression->executer()){
         m_sequence->executer();
-        if (m_affectation2 != nullptr)m_affectation2->executer();
+        if(m_affectation2 != nullptr) m_affectation2->executer();
     }
     
-//    if(m_affectation1 != nullptr) m_affectation1->executer();
-//    while(m_expression->executer()){
-////        cout << "coucou" << endl;
-//        m_sequence->executer();
-//        if(m_affectation2 != nullptr) m_affectation2->executer();
-//}
-    
-  return 0; // La valeur renvoyée ne représente rien !
+    return 0; // La valeur renvoyée ne représente rien !
 }
