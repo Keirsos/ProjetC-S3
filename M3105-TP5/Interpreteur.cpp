@@ -56,17 +56,24 @@ Noeud* Interpreteur::programme() {
   return sequence;
 }
 
+bool contient(vector<string> v, Symbole s){
+    int i = 0;
+    while(i < v.size() && !(s == v[i])) i++;
+    return i != v.size();
+}
+
 Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
   vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
   do {
     sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire");
-//  while (find(listeInst.begin(), listeInst.end(), m_lecteur.getSymbole()) != listeInst.end());
+  } while(contient(listeInst, m_lecteur.getSymbole()));
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
-  return sequence;
+  return sequence;     
+          
+          
 }
 
 Noeud* Interpreteur::inst() {
