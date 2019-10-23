@@ -142,4 +142,15 @@ private :
     vector<Noeud*> m_noeuds;
 };
 
+class NoeudInstLire: public Noeud {
+public :
+    NoeudInstLire(Noeud* variable, vector<Noeud*> variables);
+    
+    ~NoeudInstLire(){}
+    int executer() override;
+private :
+    Noeud* m_variable;
+    vector<Noeud*> m_variables;
+};
+
 #endif /* ARBREABSTRAIT_H */

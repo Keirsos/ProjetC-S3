@@ -152,3 +152,14 @@ int NoeudInstEcrire::executer() {
     
     return 0; // La valeur renvoyée ne représente rien !
 }
+
+NoeudInstLire::NoeudInstLire(Noeud* variable, vector<Noeud*> variables)
+: m_variable(variable), m_variables(variables) {
+}
+
+int NoeudInstLire::executer() {
+    
+    
+    
+    return 0; // La valeur renvoyée ne représente rien !
+}

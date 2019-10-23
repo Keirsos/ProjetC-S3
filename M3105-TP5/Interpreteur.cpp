@@ -59,7 +59,7 @@ Noeud* Interpreteur::programme() {
 Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
-  vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter","pour"};
+  vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
   do {
     sequence->ajoute(inst());
   } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire");
@@ -88,6 +88,8 @@ Noeud* Interpreteur::inst() {
       return instPour();
   else if (m_lecteur.getSymbole() == "ecrire")
       return instEcrire();
+  else if (m_lecteur.getSymbole() == "lire")
+      return instLire();
   // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
   else {
       erreur("Instruction incorrecte");
@@ -246,4 +248,24 @@ Noeud* Interpreteur::instEcrire(){
     testerEtAvancer(")");
     
     return new NoeudInstEcrire(noeuds);
+}
+
+Noeud* Interpreteur::instLire() {
+    vector<const string *> variables;
+    
+    testerEtAvancer("lire");
+    testerEtAvancer("(");
+    
+    string var = m_lecteur.getSymbole().getChaine();
+    m_lecteur.avancer();
+    
+    while (testerBool(",")){
+        variables.push_back(&(m_lecteur.getSymbole().getChaine()));
+        m_lecteur.avancer();
+    }
+    
+    testerEtAvancer(")");
+    
+    return nullptr;
+    //return new NoeudInstRepeter(var, variables);
 }
