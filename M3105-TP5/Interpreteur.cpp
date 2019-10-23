@@ -4,12 +4,24 @@
 using namespace std;
 
 Interpreteur::Interpreteur(ifstream & fichier) :
-m_lecteur(fichier), m_table(), m_arbre(nullptr) {
+m_lecteur(fichier), m_table(), m_arbre(nullptr), m_nbErreurs(0) {
 }
 
 void Interpreteur::analyse() {
   m_arbre = programme(); // on lance l'analyse de la première règle
 }
+
+//void Interpreteur::tester(const string & symboleAttendu) const {
+//  // Teste si le symbole courant est égal au symboleAttendu... Si non, lève une exception
+//  static char messageWhat[256];
+//  if (m_lecteur.getSymbole() != symboleAttendu) {
+//    sprintf(messageWhat,
+//            "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
+//            m_lecteur.getLigne(), m_lecteur.getColonne(),
+//            symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
+//    throw SyntaxeException(messageWhat);
+//  }
+//}
 
 void Interpreteur::tester(const string & symboleAttendu) const {
   // Teste si le symbole courant est égal au symboleAttendu... Si non, lève une exception
@@ -19,7 +31,9 @@ void Interpreteur::tester(const string & symboleAttendu) const {
             "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
             m_lecteur.getLigne(), m_lecteur.getColonne(),
             symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-    throw SyntaxeException(messageWhat);
+    cout << messageWhat << endl;
+    incrErreurs();
+    m_lecteur.avancer();
   }
 }
 
@@ -31,8 +45,18 @@ bool Interpreteur::testerBool(const string & symboleAttendu) const {
 void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
   // Teste si le symbole courant est égal au symboleAttendu... Si oui, avance, Sinon, lève une exception
   tester(symboleAttendu);
-  m_lecteur.avancer();
+  //m_lecteur.avancer();
 }
+
+//void Interpreteur::erreur(const string & message) const {
+//  // Lève une exception contenant le message et le symbole courant trouvé
+//  // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
+//  static char messageWhat[256];
+//  sprintf(messageWhat,
+//          "Ligne %d, Colonne %d - Erreur de syntaxe - %s - Symbole trouvé : %s",
+//          m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str(), m_lecteur.getSymbole().getChaine().c_str());
+//  throw SyntaxeException(messageWhat);
+//}
 
 void Interpreteur::erreur(const string & message) const {
   // Lève une exception contenant le message et le symbole courant trouvé
@@ -41,7 +65,7 @@ void Interpreteur::erreur(const string & message) const {
   sprintf(messageWhat,
           "Ligne %d, Colonne %d - Erreur de syntaxe - %s - Symbole trouvé : %s",
           m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-  throw SyntaxeException(messageWhat);
+  m_nbErreurs++;
 }
 
 Noeud* Interpreteur::programme() {
@@ -53,6 +77,11 @@ Noeud* Interpreteur::programme() {
   Noeud* sequence = seqInst();
   testerEtAvancer("finproc");
   tester("<FINDEFICHIER>");
+  
+  if (m_nbErreurs != 0){
+      throw SyntaxeException(m_nbErreurs, " erreurs trouvées, arrêt du programme");
+  }
+  
   return sequence;
 }
 
@@ -71,9 +100,7 @@ Noeud* Interpreteur::seqInst() {
   } while(contient(listeInst, m_lecteur.getSymbole()));
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
-  return sequence;     
-          
-          
+  return sequence;
 }
 
 Noeud* Interpreteur::inst() {
@@ -155,17 +182,6 @@ Noeud* Interpreteur::facteur() {
   return fact;
 }
 
-//Noeud* Interpreteur::instSi() {
-//  // <instSi> ::= si ( <expression> ) <seqInst> finsi
-//  testerEtAvancer("si");
-//  testerEtAvancer("(");
-//  Noeud* condition = expression(); // On mémorise la condition
-//  testerEtAvancer(")");
-//  Noeud* sequence = seqInst();     // On mémorise la séquence d'instruction
-//  testerEtAvancer("finsi");
-//  return new NoeudInstSi(condition, sequence); // Et on renvoie un noeud Instruction Si
-//}
-
 Noeud* Interpreteur::instTantQue() {
     testerEtAvancer("tantque");
     testerEtAvancer("(");
@@ -240,7 +256,7 @@ Noeud* Interpreteur::instEcrire(){
     testerEtAvancer("ecrire");
     testerEtAvancer("(");
     
-    if(testerBool(",")) erreur(",");
+    if(testerBool(",")) tester(",");
     
     while(!testerBool(")")){
         if(testerBool(",")) m_lecteur.avancer();

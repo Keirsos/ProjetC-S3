@@ -27,6 +27,8 @@ private:
     Lecteur        m_lecteur;  // Le lecteur de symboles utilisé pour analyser le fichier
     TableSymboles  m_table;    // La table des symboles valués
     Noeud*         m_arbre;    // L'arbre abstrait
+    
+    int            m_nbErreurs;
 
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
@@ -49,8 +51,9 @@ private:
     void tester (const string & symboleAttendu) const;   // Si symbole courant != symboleAttendu, on lève une exception
     void testerEtAvancer(const string & symboleAttendu); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
     void erreur (const string & mess) const;             // Lève une exception "contenant" le message mess
-
+    
     bool testerBool(const string & symboleAttendu) const;
+    inline void incrErreurs() {m_nbErreurs++;}
 };
 
 #endif /* INTERPRETEUR_H */

@@ -29,7 +29,7 @@ procedure principale()
         k=k+1;
     finpour
     ecrire("k = ",k)
-    lire(k,l)
+    lire(k,kk)
     ecrire("k = ",k)
 finproc
 # Commentaire Final
