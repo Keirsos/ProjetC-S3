@@ -41,10 +41,6 @@ bool Interpreteur::tester(const string & symboleAttendu) {
         cout << messageWhat << endl;
         incrErreurs();
         return false;
-        
-//        while (!estInstFin()){
-//            m_lecteur.avancer();
-//        }
     }
     return true;
 }
@@ -88,6 +84,18 @@ Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
+//      if (m_lecteur.getSymbole() == ";"){
+//        cout << "test" << endl;
+//        m_lecteur.avancer();
+//      }
+//      else 
+      if (estInstFin()){
+        while (!estInstDepart()){
+            erreur(m_lecteur.getSymbole().getChaine());
+            m_lecteur.avancer();
+        }
+      }
+        
     sequence->ajoute(inst());
   } while(estInstDepart());
   // Tant que le symbole courant est un début possible d'instruction...
