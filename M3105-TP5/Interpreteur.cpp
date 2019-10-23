@@ -30,7 +30,7 @@ bool Interpreteur::testerBool(const string & symboleAttendu) const {
   return (m_lecteur.getSymbole() == symboleAttendu);
 }
 
-void Interpreteur::tester(const string & symboleAttendu) {
+bool Interpreteur::tester(const string & symboleAttendu) {
     // Teste si le symbole courant est égal au symboleAttendu...
     static char messageWhat[256];
     if (m_lecteur.getSymbole() != symboleAttendu) {
@@ -40,17 +40,18 @@ void Interpreteur::tester(const string & symboleAttendu) {
                 symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
         cout << messageWhat << endl;
         incrErreurs();
+        return false;
         
 //        while (!estInstFin()){
 //            m_lecteur.avancer();
 //        }
     }
+    return true;
 }
 
 void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
     // Teste si le symbole courant est égal au symboleAttendu... Si oui, avance
-    tester(symboleAttendu);
-    m_lecteur.avancer();
+    if (tester(symboleAttendu)) m_lecteur.avancer();
 }
 
 void Interpreteur::erreur(const string & message) {

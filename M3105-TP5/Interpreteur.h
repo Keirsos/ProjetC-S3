@@ -50,7 +50,7 @@ private:
     Noeud* instLire();
 
     // outils pour simplifier l'analyse syntaxique
-    void tester(const string & symboleAttendu);
+    bool tester(const string & symboleAttendu);
     void testerEtAvancer(const string & symboleAttendu); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
     void erreur (const string & mess);             // Lève une exception "contenant" le message mess
     
