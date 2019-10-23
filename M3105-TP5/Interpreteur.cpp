@@ -239,7 +239,11 @@ Noeud* Interpreteur::instEcrire(){
     
     testerEtAvancer("ecrire");
     testerEtAvancer("(");
+    
+    if(testerBool(",")) erreur(",");
+    
     while(!testerBool(")")){
+        if(testerBool(",")) m_lecteur.avancer();
         if(testerBool("<CHAINE>")){
             SymboleValue* chaine = new SymboleValue(m_lecteur.getSymbole());
             noeuds.push_back(chaine);
@@ -248,9 +252,6 @@ Noeud* Interpreteur::instEcrire(){
         else{
             noeuds.push_back(expression());
         }
-        if(testerBool(",")){
-            m_lecteur.avancer();
-        }
     }
     testerEtAvancer(")");
     
@@ -258,21 +259,21 @@ Noeud* Interpreteur::instEcrire(){
 }
 
 Noeud* Interpreteur::instLire() {
-    vector<const string *> variables;
+    vector<Noeud*> variables;
     
     testerEtAvancer("lire");
     testerEtAvancer("(");
-    
-    string var = m_lecteur.getSymbole().getChaine();
-    m_lecteur.avancer();
-    
-    while (testerBool(",")){
-        variables.push_back(&(m_lecteur.getSymbole().getChaine()));
+    tester("<VARIABLE>");
+    while (!testerBool(")")){
+        
+        if(testerBool(",")) m_lecteur.avancer();
+        
+        tester("<VARIABLE>");
+        Noeud* var = m_table.chercheAjoute(m_lecteur.getSymbole());
+        variables.push_back(var);
         m_lecteur.avancer();
     }
-    
     testerEtAvancer(")");
     
-    return nullptr;
-    //return new NoeudInstRepeter(var, variables);
+    return new NoeudInstLire(variables);
 }

@@ -67,19 +67,6 @@ int NoeudOperateurBinaire::executer() {
   return valeur; // On retourne la valeur calculée
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// NoeudInstSi
-////////////////////////////////////////////////////////////////////////////////
-
-//NoeudInstSi::NoeudInstSi(Noeud* condition, Noeud* sequence)
-//: m_condition(condition), m_sequence(sequence) {
-//}
-//
-//int NoeudInstSi::executer() {
-//  if (m_condition->executer()) m_sequence->executer();
-//  return 0; // La valeur renvoyée ne représente rien !
-//}
-
 NoeudInstTantQue::NoeudInstTantQue(Noeud* condition, Noeud* sequence)
 : m_condition(condition), m_sequence(sequence) {
 }
@@ -153,13 +140,17 @@ int NoeudInstEcrire::executer() {
     return 0; // La valeur renvoyée ne représente rien !
 }
 
-NoeudInstLire::NoeudInstLire(Noeud* variable, vector<Noeud*> variables)
-: m_variable(variable), m_variables(variables) {
+NoeudInstLire::NoeudInstLire(vector<Noeud*> variables)
+: m_variables(variables) {
 }
 
 int NoeudInstLire::executer() {
     
-    
+    for(Noeud* var : m_variables){
+        int temp;
+        cin >> temp;
+        ((SymboleValue*)var)->setValeur(temp);
+    }
     
     return 0; // La valeur renvoyée ne représente rien !
 }
