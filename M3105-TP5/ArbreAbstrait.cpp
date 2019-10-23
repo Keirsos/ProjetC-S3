@@ -131,3 +131,24 @@ int NoeudInstSiRiche::executer(){
     
     return 0;
 }
+
+NoeudInstEcrire::NoeudInstEcrire(vector<Noeud*> noeuds)
+: m_noeuds(noeuds) {
+}
+
+int NoeudInstEcrire::executer() {
+    
+    for(Noeud* noeud : m_noeuds){
+        if((typeid(*noeud)==typeid(SymboleValue) &&  *((SymboleValue*)noeud)== "<CHAINE>" )){
+            string chaine = ((SymboleValue*)noeud)->getChaine();
+            chaine.erase(0,1); chaine.erase(chaine.size()-1,1);
+            cout << chaine;
+        }
+        else{
+            cout << noeud->executer();
+        }
+    }
+    cout << endl;
+    
+    return 0; // La valeur renvoyée ne représente rien !
+}

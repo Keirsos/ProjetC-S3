@@ -132,4 +132,14 @@ private :
     std::vector<Noeud*> m_sequences;
 };
 
+class NoeudInstEcrire: public Noeud {
+public :
+    NoeudInstEcrire(vector<Noeud*> noeuds);
+    
+    ~NoeudInstEcrire(){}
+    int executer() override;
+private :
+    vector<Noeud*> m_noeuds;
+};
+
 #endif /* ARBREABSTRAIT_H */

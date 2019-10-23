@@ -62,7 +62,7 @@ Noeud* Interpreteur::seqInst() {
   vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter","pour"};
   do {
     sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour");
+  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire");
 //  while (find(listeInst.begin(), listeInst.end(), m_lecteur.getSymbole()) != listeInst.end());
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
@@ -86,6 +86,8 @@ Noeud* Interpreteur::inst() {
       return instRepeter();
   else if (m_lecteur.getSymbole() == "pour")
       return instPour();
+  else if (m_lecteur.getSymbole() == "ecrire")
+      return instEcrire();
   // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
   else {
       erreur("Instruction incorrecte");
@@ -116,7 +118,7 @@ Noeud* Interpreteur::expression() {
     Symbole operateur = m_lecteur.getSymbole(); // On mémorise le symbole de l'opérateur
     m_lecteur.avancer();
     Noeud* factDroit = facteur(); // On mémorise l'opérande droit
-    fact = new NoeudOperateurBinaire(operateur, fact, factDroit); // Et on construuit un noeud opérateur binaire
+    fact = new NoeudOperateurBinaire(operateur, fact, factDroit); // Et on construit un noeud opérateur binaire
   }
   return fact; // On renvoie fact qui pointe sur la racine de l'expression
 }
@@ -220,4 +222,28 @@ Noeud* Interpreteur::instSiRiche(){
     testerEtAvancer("finsi");
     
     return new NoeudInstSiRiche(expressions, sequences);
+}
+
+Noeud* Interpreteur::instEcrire(){
+    
+    vector<Noeud*> noeuds;
+    
+    testerEtAvancer("ecrire");
+    testerEtAvancer("(");
+    while(!testerBool(")")){
+        if(testerBool("<CHAINE>")){
+            SymboleValue* chaine = new SymboleValue(m_lecteur.getSymbole());
+            noeuds.push_back(chaine);
+            m_lecteur.avancer();
+        }
+        else{
+            noeuds.push_back(expression());
+        }
+        if(testerBool(",")){
+            m_lecteur.avancer();
+        }
+    }
+    testerEtAvancer(")");
+    
+    return new NoeudInstEcrire(noeuds);
 }

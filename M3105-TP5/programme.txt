@@ -28,5 +28,6 @@ procedure principale()
         l = l+k;
         k=k+1;
     finpour
+    ecrire("i + 1 = ",i+1)
 finproc
 # Commentaire Final
