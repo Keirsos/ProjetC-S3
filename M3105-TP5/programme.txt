@@ -2,9 +2,9 @@
 # Les lignes de commentaires commencent par #
 procedure principale()
     i = 15;
-    j = 0;
+    j = 0
     m = 0;
-    l = 0;
+    l = 0
     k = 1;
     si (i>14)
         m=1;
@@ -20,7 +20,7 @@ procedure principale()
     fintantque
     repeter
         j = j+1;
-    jusqua (j==5)
+    jusqua (j==5);
     pour (k=1;k<=5;k=k+1)
         l = l+k;
     finpour
@@ -28,8 +28,8 @@ procedure principale()
         l = l+k;
         k=k+1;
     finpour
-    ecrire("k = ",k)
-    lire(k,kk)
-    ecrire("k = ",k)
+    ecrire("k = ",k);
+    #lire(k,kk);
+    #ecrire("k = ",k);
 finproc
 # Commentaire Final

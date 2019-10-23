@@ -29,7 +29,9 @@ private:
     Noeud*         m_arbre;    // L'arbre abstrait
     
     int            m_nbErreurs;
-
+    const vector<string> m_listeInstDepart = {"<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
+    const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finproc","<FINDEFICHIER>"};
+    
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
     Noeud*  seqInst();	   //     <seqInst> ::= <inst> { <inst> }
@@ -48,12 +50,14 @@ private:
     Noeud* instLire();
 
     // outils pour simplifier l'analyse syntaxique
-    void tester (const string & symboleAttendu) const;   // Si symbole courant != symboleAttendu, on lève une exception
+    void tester(const string & symboleAttendu);
     void testerEtAvancer(const string & symboleAttendu); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
-    void erreur (const string & mess) const;             // Lève une exception "contenant" le message mess
+    void erreur (const string & mess);             // Lève une exception "contenant" le message mess
     
     bool testerBool(const string & symboleAttendu) const;
     inline void incrErreurs() {m_nbErreurs++;}
+    bool estInstDepart();
+    bool estInstFin();
 };
 
 #endif /* INTERPRETEUR_H */

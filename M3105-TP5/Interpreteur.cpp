@@ -11,30 +11,18 @@ void Interpreteur::analyse() {
   m_arbre = programme(); // on lance l'analyse de la première règle
 }
 
-//void Interpreteur::tester(const string & symboleAttendu) const {
-//  // Teste si le symbole courant est égal au symboleAttendu... Si non, lève une exception
-//  static char messageWhat[256];
-//  if (m_lecteur.getSymbole() != symboleAttendu) {
-//    sprintf(messageWhat,
-//            "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
-//            m_lecteur.getLigne(), m_lecteur.getColonne(),
-//            symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-//    throw SyntaxeException(messageWhat);
-//  }
-//}
+bool contient(vector<string> v, Symbole s){
+    int i = 0;
+    while(i < v.size() && !(s == v[i])) i++;
+    return i != v.size();
+}
 
-void Interpreteur::tester(const string & symboleAttendu) const {
-  // Teste si le symbole courant est égal au symboleAttendu... Si non, lève une exception
-  static char messageWhat[256];
-  if (m_lecteur.getSymbole() != symboleAttendu) {
-    sprintf(messageWhat,
-            "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
-            m_lecteur.getLigne(), m_lecteur.getColonne(),
-            symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-    cout << messageWhat << endl;
-    incrErreurs();
-    m_lecteur.avancer();
-  }
+bool Interpreteur::estInstDepart(){
+    return (contient(m_listeInstDepart, m_lecteur.getSymbole()));
+}
+
+bool Interpreteur::estInstFin(){
+    return (contient(m_listeInstFin, m_lecteur.getSymbole()));
 }
 
 bool Interpreteur::testerBool(const string & symboleAttendu) const {
@@ -42,30 +30,38 @@ bool Interpreteur::testerBool(const string & symboleAttendu) const {
   return (m_lecteur.getSymbole() == symboleAttendu);
 }
 
-void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
-  // Teste si le symbole courant est égal au symboleAttendu... Si oui, avance, Sinon, lève une exception
-  tester(symboleAttendu);
-  //m_lecteur.avancer();
+void Interpreteur::tester(const string & symboleAttendu) {
+    // Teste si le symbole courant est égal au symboleAttendu...
+    static char messageWhat[256];
+    if (m_lecteur.getSymbole() != symboleAttendu) {
+        sprintf(messageWhat,
+                "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
+                m_lecteur.getLigne(), m_lecteur.getColonne(),
+                symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
+        cout << messageWhat << endl;
+        incrErreurs();
+        
+//        while (!estInstFin()){
+//            m_lecteur.avancer();
+//        }
+    }
 }
 
-//void Interpreteur::erreur(const string & message) const {
-//  // Lève une exception contenant le message et le symbole courant trouvé
-//  // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
-//  static char messageWhat[256];
-//  sprintf(messageWhat,
-//          "Ligne %d, Colonne %d - Erreur de syntaxe - %s - Symbole trouvé : %s",
-//          m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-//  throw SyntaxeException(messageWhat);
-//}
+void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
+    // Teste si le symbole courant est égal au symboleAttendu... Si oui, avance
+    tester(symboleAttendu);
+    m_lecteur.avancer();
+}
 
-void Interpreteur::erreur(const string & message) const {
+void Interpreteur::erreur(const string & message) {
   // Lève une exception contenant le message et le symbole courant trouvé
   // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
   static char messageWhat[256];
   sprintf(messageWhat,
-          "Ligne %d, Colonne %d - Erreur de syntaxe - %s - Symbole trouvé : %s",
-          m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-  m_nbErreurs++;
+          "Ligne %d, Colonne %d - Erreur levée : %s",
+          m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str());
+    cout << messageWhat << endl;
+    incrErreurs();
 }
 
 Noeud* Interpreteur::programme() {
@@ -79,25 +75,20 @@ Noeud* Interpreteur::programme() {
   tester("<FINDEFICHIER>");
   
   if (m_nbErreurs != 0){
-      throw SyntaxeException(m_nbErreurs, " erreurs trouvées, arrêt du programme");
+    static char messageErreur[256];
+    sprintf(messageErreur, "%d erreurs trouvées, arrêt du programme", m_nbErreurs);
+    throw SyntaxeException(messageErreur);
   }
   
   return sequence;
 }
 
-bool contient(vector<string> v, Symbole s){
-    int i = 0;
-    while(i < v.size() && !(s == v[i])) i++;
-    return i != v.size();
-}
-
 Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
-  vector<string> listeInst = {"<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
   do {
     sequence->ajoute(inst());
-  } while(contient(listeInst, m_lecteur.getSymbole()));
+  } while(estInstDepart());
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
@@ -110,8 +101,6 @@ Noeud* Interpreteur::inst() {
     testerEtAvancer(";");
     return affect;
   }
-//  else if (m_lecteur.getSymbole() == "si")
-//    return instSi();
   else if (m_lecteur.getSymbole() == "si")
       return instSiRiche();
   else if (m_lecteur.getSymbole() == "tantque")
@@ -199,6 +188,7 @@ Noeud* Interpreteur::instRepeter() {
     testerEtAvancer("(");
     Noeud* condition = expression();
     testerEtAvancer(")");
+    testerEtAvancer(";");
     return new NoeudInstRepeter(sequence, condition);
 }
 
@@ -208,13 +198,13 @@ Noeud* Interpreteur::instPour(){
     
     testerEtAvancer("pour");
     testerEtAvancer("(");
-    if (testerBool("k")){
+    if (testerBool("<VARIABLE>")){
         affect1 = affectation();
     }
     testerEtAvancer(";");
     Noeud* expre = expression();
     testerEtAvancer(";");
-    if (testerBool("k")){
+    if (testerBool("<VARIABLE>")){
         affect2 = affectation();
     }
     testerEtAvancer(")");
@@ -269,7 +259,9 @@ Noeud* Interpreteur::instEcrire(){
             noeuds.push_back(expression());
         }
     }
+    
     testerEtAvancer(")");
+    testerEtAvancer(";");
     
     return new NoeudInstEcrire(noeuds);
 }
@@ -280,6 +272,7 @@ Noeud* Interpreteur::instLire() {
     testerEtAvancer("lire");
     testerEtAvancer("(");
     tester("<VARIABLE>");
+    
     while (!testerBool(")")){
         
         if(testerBool(",")) m_lecteur.avancer();
@@ -289,7 +282,9 @@ Noeud* Interpreteur::instLire() {
         variables.push_back(var);
         m_lecteur.avancer();
     }
+    
     testerEtAvancer(")");
+    testerEtAvancer(";");
     
     return new NoeudInstLire(variables);
 }
