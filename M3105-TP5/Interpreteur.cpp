@@ -84,31 +84,24 @@ Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
-//      if (m_lecteur.getSymbole() == ";"){
-//        cout << "test" << endl;
-//        m_lecteur.avancer();
-//      }
-//      else 
-      if (estInstFin()){
-        while (!estInstDepart()){
-            erreur(m_lecteur.getSymbole().getChaine());
-            m_lecteur.avancer();
-        }
-      }
-        
     sequence->ajoute(inst());
   } while(estInstDepart());
+  //m_lecteur.getSymbole() != "<FINDEFICHIER>"
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
 }
 
 Noeud* Interpreteur::inst() {
-  // <inst> ::= <affectation>  ; | <instSi>
+  // <inst>
   if (m_lecteur.getSymbole() == "<VARIABLE>") {
     Noeud *affect = affectation();
     testerEtAvancer(";");
     return affect;
+  }
+  else if (m_lecteur.getSymbole() == ";"){
+      m_lecteur.avancer();
+      return nullptr;
   }
   else if (m_lecteur.getSymbole() == "si")
       return instSiRiche();
