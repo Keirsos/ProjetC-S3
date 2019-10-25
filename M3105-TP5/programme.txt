@@ -1,9 +1,6 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
-    ;;;;;;
-    finsi
-    finpour
     i = 15;
     j = 0;
     m = 0;
@@ -18,22 +15,23 @@ procedure principale()
     sinon
         m=0;
     finsi
-    tantque (i<20)
+    tantque (i<=20)
+        #pour (u=1;u<=2;u=u+1)
+        #    ecrire(i);
+        #finpour
         i = i+1;
-        ecrire("bite");
     fintantque
     repeter
         j = j+1;
     jusqua (j==5);
     pour (k=1;k<=5;k=k+1)
         l = l+k;
-    finpour
+    finpour;
     pour (;k<=5;)
         l = l+k;
         k=k+1;
     finpour
-    ecrire("k = ",k);
-# ; différent
+    #ecrire("k = ",k);
     #lire(k,kk);
     #ecrire("k = ",k);
 finproc

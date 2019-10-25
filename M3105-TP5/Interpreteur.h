@@ -29,8 +29,9 @@ private:
     Noeud*         m_arbre;    // L'arbre abstrait
     
     int            m_nbErreurs;
-    const vector<string> m_listeInstDepart = {"<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
+    const vector<string> m_listeInstDepart = {";","<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
     const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finproc","<FINDEFICHIER>"};
+    bool           m_dansSousSequence = false;
     
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER

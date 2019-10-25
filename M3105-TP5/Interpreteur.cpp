@@ -35,9 +35,8 @@ bool Interpreteur::tester(const string & symboleAttendu) {
     static char messageWhat[256];
     if (m_lecteur.getSymbole() != symboleAttendu) {
         sprintf(messageWhat,
-                "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
-                m_lecteur.getLigne(), m_lecteur.getColonne(),
-                symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
+                "Ligne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
+                m_lecteur.getLigne()-1, symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
         cout << messageWhat << endl;
         incrErreurs();
         return false;
@@ -55,8 +54,8 @@ void Interpreteur::erreur(const string & message) {
   // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
   static char messageWhat[256];
   sprintf(messageWhat,
-          "Ligne %d, Colonne %d - Erreur levée : %s",
-          m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str());
+          "Ligne %d - Erreur levée : %s",
+          m_lecteur.getLigne(), message.c_str());
     cout << messageWhat << endl;
     incrErreurs();
 }
@@ -84,19 +83,26 @@ Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
-//      if (m_lecteur.getSymbole() == ";"){
-//        cout << "test" << endl;
-//        m_lecteur.avancer();
-//      }
-//      else 
-      if (estInstFin()){
-        while (!estInstDepart()){
-            erreur(m_lecteur.getSymbole().getChaine());
-            m_lecteur.avancer();
-        }
-      }
         
-    sequence->ajoute(inst());
+    if (estInstDepart()) sequence->ajoute(inst()); // pour la première ligne
+    
+    if (true){
+    if (!m_dansSousSequence && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+        if (!estInstDepart()){
+            erreur(m_lecteur.getSymbole().getChaine());
+            while (!estInstFin()){
+                m_lecteur.avancer();
+            }
+        }
+
+        if (!estInstDepart()){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
+            while (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+                m_lecteur.avancer();
+            }
+        }
+    }
+    }
+    
   } while(estInstDepart());
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
@@ -105,28 +111,33 @@ Noeud* Interpreteur::seqInst() {
 
 Noeud* Interpreteur::inst() {
   // <inst> ::= <affectation>  ; | <instSi>
-  if (m_lecteur.getSymbole() == "<VARIABLE>") {
-    Noeud *affect = affectation();
-    testerEtAvancer(";");
-    return affect;
-  }
-  else if (m_lecteur.getSymbole() == "si")
-      return instSiRiche();
-  else if (m_lecteur.getSymbole() == "tantque")
-      return instTantQue();
-  else if (m_lecteur.getSymbole() == "repeter")
-      return instRepeter();
-  else if (m_lecteur.getSymbole() == "pour")
-      return instPour();
-  else if (m_lecteur.getSymbole() == "ecrire")
-      return instEcrire();
-  else if (m_lecteur.getSymbole() == "lire")
-      return instLire();
-  // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
-  else {
-      erreur("Instruction incorrecte");
-      return nullptr;
-  }
+    if (m_lecteur.getSymbole() == ";"){
+        m_lecteur.avancer();
+        return nullptr;
+    }
+    else if (m_lecteur.getSymbole() == "<VARIABLE>") {
+        // à ne pas modifier, c'est normal que ce soit différent
+        Noeud *affect = affectation();
+        testerEtAvancer(";");
+        return affect;
+    }
+    else if (m_lecteur.getSymbole() == "si")
+        return instSiRiche();
+    else if (m_lecteur.getSymbole() == "tantque")
+        return instTantQue();
+    else if (m_lecteur.getSymbole() == "repeter")
+        return instRepeter();
+    else if (m_lecteur.getSymbole() == "pour")
+        return instPour();
+    else if (m_lecteur.getSymbole() == "ecrire")
+        return instEcrire();
+    else if (m_lecteur.getSymbole() == "lire")
+        return instLire();
+    
+    else {
+        erreur("Début d'instruction incorrecte");
+        return nullptr;
+    }
 }
 
 Noeud* Interpreteur::affectation() {
@@ -185,14 +196,18 @@ Noeud* Interpreteur::instTantQue() {
     testerEtAvancer("(");
     Noeud* condition = expression();
     testerEtAvancer(")");
+    m_dansSousSequence = true;
     Noeud* sequence = seqInst();
+    m_dansSousSequence = false;
     testerEtAvancer("fintantque");
     return new NoeudInstTantQue(condition, sequence);
 }
 
 Noeud* Interpreteur::instRepeter() {
     testerEtAvancer("repeter");
+    m_dansSousSequence = true;
     Noeud* sequence = seqInst();
+    m_dansSousSequence = false;
     testerEtAvancer("jusqua");
     testerEtAvancer("(");
     Noeud* condition = expression();
@@ -217,7 +232,9 @@ Noeud* Interpreteur::instPour(){
         affect2 = affectation();
     }
     testerEtAvancer(")");
+    m_dansSousSequence = true;
     Noeud* sequence = seqInst();
+    m_dansSousSequence = false;
     testerEtAvancer("finpour");
     
     return new NoeudInstPour(affect1, expre, affect2, sequence);
@@ -231,17 +248,23 @@ Noeud* Interpreteur::instSiRiche(){
     testerEtAvancer("(");
     expressions.push_back(expression());
     testerEtAvancer(")");
+    m_dansSousSequence = true;
     sequences.push_back(seqInst());
+    m_dansSousSequence = false;
     while(testerBool("sinonsi")){
         testerEtAvancer("sinonsi");
         testerEtAvancer("(");
         expressions.push_back(expression());
         testerEtAvancer(")");
+        m_dansSousSequence = true;
         sequences.push_back(seqInst());
+        m_dansSousSequence = false;
     }
     if(testerBool("sinon")){
         testerEtAvancer("sinon");
+        m_dansSousSequence = true;
         sequences.push_back(seqInst());
+        m_dansSousSequence = false;
     }
     testerEtAvancer("finsi");
     
