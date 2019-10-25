@@ -23,6 +23,7 @@ procedure principale()
         finpour
         i = i+1;
     fintantque
+    ecrire("normal");
     repeter
         j = j+1;
     jusqua (j==5);

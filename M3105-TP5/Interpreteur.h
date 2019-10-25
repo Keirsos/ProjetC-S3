@@ -28,22 +28,20 @@ private:
     TableSymboles  m_table;    // La table des symboles valués
     Noeud*         m_arbre;    // L'arbre abstrait
     
-    int            m_nbErreurs;
     const vector<string> m_listeInstDepart = {";","<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
     const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finproc","<FINDEFICHIER>"};
-    bool           m_dansSousSequence = false;
-    int            m_nSequence = 0;
+    vector<int> m_lignesErreurs;
     
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
-    Noeud*  seqInst();	   //     <seqInst> ::= <inst> { <inst> }
     Noeud*  inst();	       //        <inst> ::= <affectation> ; | <instSi>
     Noeud*  affectation(); // <affectation> ::= <variable> = <expression> 
     Noeud*  expression();  //  <expression> ::= <facteur> { <opBinaire> <facteur> }
     Noeud*  facteur();     //     <facteur> ::= <entier>  |  <variable>  |  - <facteur>  | non <facteur> | ( <expression> )
                            //   <opBinaire> ::= + | - | *  | / | < | > | <= | >= | == | != | et | ou
     
-    
+    Noeud* seqProgramme();
+    Noeud* seqInst();	   //     <seqInst> ::= <inst> { <inst> }
     Noeud* instTantQue();
     Noeud* instRepeter();
     Noeud* instPour();
@@ -54,10 +52,10 @@ private:
     // outils pour simplifier l'analyse syntaxique
     bool tester(const string & symboleAttendu);
     void testerEtAvancer(const string & symboleAttendu); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
-    void erreur (const string & mess);             // Lève une exception "contenant" le message mess
+    void erreur (const string & type, const string & str = "");             // Lève une exception "contenant" le message mess
+    bool erreurSurLigne (int l);
     
     bool testerBool(const string & symboleAttendu) const;
-    inline void incrErreurs() {m_nbErreurs++;}
     bool estInstDepart();
     bool estInstFin();
 };

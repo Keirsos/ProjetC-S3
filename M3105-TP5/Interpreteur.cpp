@@ -4,25 +4,60 @@
 using namespace std;
 
 Interpreteur::Interpreteur(ifstream & fichier) :
-m_lecteur(fichier), m_table(), m_arbre(nullptr), m_nbErreurs(0) {
+m_lecteur(fichier), m_table(), m_arbre(nullptr) {
 }
 
 void Interpreteur::analyse() {
   m_arbre = programme(); // on lance l'analyse de la première règle
 }
 
-bool contient(vector<string> v, Symbole s){
+bool contientSymbole(vector<string> v, Symbole s){
     int i = 0;
     while(i < v.size() && !(s == v[i])) i++;
     return i != v.size();
 }
 
+bool contientInt(vector<int> v, int l){
+    int i = 0;
+    while(i < v.size() && l != v[i]) i++;
+    return i != v.size();
+}
+
 bool Interpreteur::estInstDepart(){
-    return (contient(m_listeInstDepart, m_lecteur.getSymbole()));
+    return (contientSymbole(m_listeInstDepart, m_lecteur.getSymbole()));
 }
 
 bool Interpreteur::estInstFin(){
-    return (contient(m_listeInstFin, m_lecteur.getSymbole()));
+    return (contientSymbole(m_listeInstFin, m_lecteur.getSymbole()));
+}
+
+bool Interpreteur::erreurSurLigne(int l){
+    return (contientInt(m_lignesErreurs, l));
+}
+
+void Interpreteur::erreur(const string & type, const string & str) {
+  // Lève une exception contenant le message et le symbole courant trouvé
+  // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
+  static char messageWhat[256];
+  
+  if (type == "Syntaxe"){
+      string sym = m_lecteur.getSymbole().getChaine();
+      if (sym == "") sym = "<FINDEFICHIER>"; // le symbole de fin de fichier est vide, on le remplace donc pour plus de compréhension
+        sprintf(messageWhat,
+              "Ligne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
+              m_lecteur.getLigne(), str.c_str(), sym.c_str());
+    
+  } else if (type == "Message") {
+        sprintf(messageWhat,
+            "Ligne %d - Erreur levée : %s",
+            m_lecteur.getLigne(), str.c_str());
+        
+  }
+  
+  if (!erreurSurLigne(m_lecteur.getLigne())){
+        m_lignesErreurs.push_back(m_lecteur.getLigne());
+        cout << messageWhat << endl;
+    }
 }
 
 bool Interpreteur::testerBool(const string & symboleAttendu) const {
@@ -32,13 +67,9 @@ bool Interpreteur::testerBool(const string & symboleAttendu) const {
 
 bool Interpreteur::tester(const string & symboleAttendu) {
     // Teste si le symbole courant est égal au symboleAttendu...
-    static char messageWhat[256];
+    
     if (m_lecteur.getSymbole() != symboleAttendu) {
-        sprintf(messageWhat,
-                "Ligne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
-                m_lecteur.getLigne(), symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-        cout << messageWhat << endl;
-        incrErreurs();
+        erreur("Syntaxe", symboleAttendu);
         return false;
     }
     return true;
@@ -49,102 +80,60 @@ void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
     if (tester(symboleAttendu)) m_lecteur.avancer();
 }
 
-void Interpreteur::erreur(const string & message) {
-  // Lève une exception contenant le message et le symbole courant trouvé
-  // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
-  static char messageWhat[256];
-  sprintf(messageWhat,
-          "Ligne %d - Erreur levée : %s",
-          m_lecteur.getLigne(), message.c_str());
-    cout << messageWhat << endl;
-    incrErreurs();
-}
-
 Noeud* Interpreteur::programme() {
   // <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
   testerEtAvancer("procedure");
   testerEtAvancer("principale");
   testerEtAvancer("(");
   testerEtAvancer(")");
-  Noeud* sequence = seqInst();
+  Noeud* sequence = seqProgramme();
   testerEtAvancer("finproc");
   tester("<FINDEFICHIER>");
   
-  if (m_nbErreurs != 0){
+  if (!m_lignesErreurs.empty()){
     static char messageErreur[256];
-    sprintf(messageErreur, "%d erreurs trouvées, arrêt du programme", m_nbErreurs);
+    sprintf(messageErreur, "%ld erreurs trouvées, arrêt du programme", m_lignesErreurs.size());
     throw SyntaxeException(messageErreur);
   }
   
   return sequence;
 }
 
-Noeud* Interpreteur::seqInst() {
-    // <seqInst> ::= <inst> { <inst> }
-    
-    m_nSequence++;
-    
-    if (m_nSequence > 1){
-        m_dansSousSequence = true;
-    } else {
-        m_dansSousSequence = false;
-    }
-    
+Noeud* Interpreteur::seqProgramme() {
     NoeudSeqInst* sequence = new NoeudSeqInst();
     
     do {
-
-        //cout << "1" << m_lecteur.getSymbole().getChaine() << endl;
         
-        if (estInstDepart()) sequence->ajoute(inst()); // pour la première ligne
-
-        //cout << "2" << m_lecteur.getSymbole().getChaine() << endl;
+        if (estInstDepart()) sequence->ajoute(inst());
         
-        if (!m_dansSousSequence && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+        if (m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){ // même condition que le while
             if (!estInstDepart()){
-                erreur(m_lecteur.getSymbole().getChaine());
+                erreur("Message", m_lecteur.getSymbole().getChaine());
                 while (!estInstFin()){
                     m_lecteur.avancer();
                 }
             }
-            if (!estInstDepart()){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
-                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+            if (!estInstDepart()){ // tkt, on rentre dans cette boucle (si on a une inst de fin tt seule qui n'a rien à faire la), à pas modifier et pas rejoindre les 2 if
+                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc"){
+                    cout << "alé" << endl;
                     m_lecteur.avancer();
                 }
             }
         }
         
-//        if (!estInstDepart()){
-//            if (!m_dansSousSequence && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-//                erreur(m_lecteur.getSymbole().getChaine());
-//                while (!estInstFin()){
-//                    m_lecteur.avancer();
-//                }
-//            }
-//            if (!estInstDepart() && !m_dansSousSequence){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
-//                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-//                    m_lecteur.avancer();
-//                }
-//            }
-//        }
-        
-//        if (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-//            if (!m_dansSousSequence && estInstFin()){
-//                erreur(m_lecteur.getSymbole().getChaine());
-//                while (!estInstFin()){
-//                    m_lecteur.avancer();
-//                }
-//            }
-//            if (!estInstDepart() && !m_dansSousSequence){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
-//                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-//                    m_lecteur.avancer();
-//                }
-//            }
-//        }
-
-    } while(estInstDepart()); // Tant que le symbole courant est un début possible d'instruction...
+    } while(m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"); // Tant que le programme n'es pas fini
     
-    m_nSequence--;
+    return sequence;
+}
+
+Noeud* Interpreteur::seqInst() {
+    // <seqInst> ::= <inst> { <inst> }
+    
+    NoeudSeqInst* sequence = new NoeudSeqInst();
+    
+    do {
+        sequence->ajoute(inst());
+    } while(estInstDepart()); // Tant que le symbole courant est un début possible d'instruction
     
     return sequence;
 }
@@ -175,7 +164,7 @@ Noeud* Interpreteur::inst() {
         return instLire();
     
     else {
-        erreur("Début d'instruction incorrecte");
+        erreur("Message", "Début d'instruction incorrecte");
         return nullptr;
     }
 }
@@ -227,7 +216,7 @@ Noeud* Interpreteur::facteur() {
     fact = expression();
     testerEtAvancer(")");
   } else
-    erreur("Facteur incorrect");
+    erreur("Message", "Facteur incorrect");
   return fact;
 }
 
