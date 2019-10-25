@@ -4,25 +4,60 @@
 using namespace std;
 
 Interpreteur::Interpreteur(ifstream & fichier) :
-m_lecteur(fichier), m_table(), m_arbre(nullptr), m_nbErreurs(0) {
+m_lecteur(fichier), m_table(), m_arbre(nullptr) {
 }
 
 void Interpreteur::analyse() {
   m_arbre = programme(); // on lance l'analyse de la première règle
 }
 
-bool contient(vector<string> v, Symbole s){
+bool contientSymbole(vector<string> v, Symbole s){
     int i = 0;
     while(i < v.size() && !(s == v[i])) i++;
     return i != v.size();
 }
 
+bool contientInt(vector<int> v, int l){
+    int i = 0;
+    while(i < v.size() && l != v[i]) i++;
+    return i != v.size();
+}
+
 bool Interpreteur::estInstDepart(){
-    return (contient(m_listeInstDepart, m_lecteur.getSymbole()));
+    return (contientSymbole(m_listeInstDepart, m_lecteur.getSymbole()));
 }
 
 bool Interpreteur::estInstFin(){
-    return (contient(m_listeInstFin, m_lecteur.getSymbole()));
+    return (contientSymbole(m_listeInstFin, m_lecteur.getSymbole()));
+}
+
+bool Interpreteur::erreurSurLigne(int l){
+    return (contientInt(m_lignesErreurs, l));
+}
+
+void Interpreteur::erreur(const string & type, const string & str) {
+  // Lève une exception contenant le message et le symbole courant trouvé
+  // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
+  static char messageWhat[256];
+  
+  if (type == "Syntaxe"){
+      string sym = m_lecteur.getSymbole().getChaine();
+      if (sym == "") sym = "<FINDEFICHIER>"; // le symbole de fin de fichier est vide, on le remplace donc pour plus de compréhension
+        sprintf(messageWhat,
+              "Ligne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
+              m_lecteur.getLigne(), str.c_str(), sym.c_str());
+    
+  } else if (type == "Message") {
+        sprintf(messageWhat,
+            "Ligne %d - Erreur levée : %s",
+            m_lecteur.getLigne(), str.c_str());
+        
+  }
+  
+  if (!erreurSurLigne(m_lecteur.getLigne())){
+        m_lignesErreurs.push_back(m_lecteur.getLigne());
+        cout << messageWhat << endl;
+    }
 }
 
 bool Interpreteur::testerBool(const string & symboleAttendu) const {
@@ -32,14 +67,9 @@ bool Interpreteur::testerBool(const string & symboleAttendu) const {
 
 bool Interpreteur::tester(const string & symboleAttendu) {
     // Teste si le symbole courant est égal au symboleAttendu...
-    static char messageWhat[256];
+    
     if (m_lecteur.getSymbole() != symboleAttendu) {
-        sprintf(messageWhat,
-                "Ligne %d, Colonne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
-                m_lecteur.getLigne(), m_lecteur.getColonne(),
-                symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
-        cout << messageWhat << endl;
-        incrErreurs();
+        erreur("Syntaxe", symboleAttendu);
         return false;
     }
     return true;
@@ -50,70 +80,75 @@ void Interpreteur::testerEtAvancer(const string & symboleAttendu) {
     if (tester(symboleAttendu)) m_lecteur.avancer();
 }
 
-void Interpreteur::erreur(const string & message) {
-  // Lève une exception contenant le message et le symbole courant trouvé
-  // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
-  static char messageWhat[256];
-  sprintf(messageWhat,
-          "Ligne %d, Colonne %d - Erreur levée : %s",
-          m_lecteur.getLigne(), m_lecteur.getColonne(), message.c_str());
-    cout << messageWhat << endl;
-    incrErreurs();
-}
-
 Noeud* Interpreteur::programme() {
   // <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
   testerEtAvancer("procedure");
   testerEtAvancer("principale");
   testerEtAvancer("(");
   testerEtAvancer(")");
-  Noeud* sequence = seqInst();
+  Noeud* sequence = seqProgramme();
   testerEtAvancer("finproc");
   tester("<FINDEFICHIER>");
   
-  if (m_nbErreurs != 0){
+  if (!m_lignesErreurs.empty()){
     static char messageErreur[256];
-    sprintf(messageErreur, "%d erreurs trouvées, arrêt du programme", m_nbErreurs);
+    sprintf(messageErreur, "%ld erreurs trouvées, arrêt du programme", m_lignesErreurs.size());
     throw SyntaxeException(messageErreur);
   }
   
   return sequence;
 }
 
+Noeud* Interpreteur::seqProgramme() {
+    NoeudSeqInst* sequence = new NoeudSeqInst();
+    
+    do {
+        
+        if (estInstDepart()) sequence->ajoute(inst());
+        
+        if (m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){ // même condition que le while
+            if (!estInstDepart()){
+                erreur("Message", m_lecteur.getSymbole().getChaine());
+                while (!estInstFin()){
+                    m_lecteur.avancer();
+                }
+            }
+            if (!estInstDepart()){ // On rentre dans cette boucle après le traitement du if précédent, donc ne surtout pas combiner les deux if
+                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc"){
+                    m_lecteur.avancer();
+                }
+            }
+        }
+        
+    } while(m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"); // Tant que le programme n'es pas fini
+    
+    return sequence;
+}
+
 Noeud* Interpreteur::seqInst() {
-  // <seqInst> ::= <inst> { <inst> }
-  NoeudSeqInst* sequence = new NoeudSeqInst();
-  do {
-      
-    if (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-        erreur(m_lecteur.getSymbole().getChaine());
-        while (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-            m_lecteur.avancer();
-        }
-    }
+    // <seqInst> ::= <inst> { <inst> }
     
-    sequence->ajoute(inst());
+    NoeudSeqInst* sequence = new NoeudSeqInst();
     
-    if (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-        erreur(m_lecteur.getSymbole().getChaine());
-        while (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-            m_lecteur.avancer();
-        }
-    }
-  } while(estInstDepart());
-  // Tant que le symbole courant est un début possible d'instruction...
-  // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
-  return sequence;
+    do {
+        sequence->ajoute(inst());
+    } while(estInstDepart()); // Tant que le symbole courant est un début possible d'instruction
+    
+    return sequence;
 }
 
 Noeud* Interpreteur::inst() {
-  // <inst>
+  // <inst> ::= <affectation>  ; | <instSi>
     if (m_lecteur.getSymbole() == ";"){
         m_lecteur.avancer();
         return nullptr;
     }
-    else if (m_lecteur.getSymbole() == "<VARIABLE>")
-        return affectation();
+    else if (m_lecteur.getSymbole() == "<VARIABLE>") {
+        // à ne pas modifier, c'est normal que ce soit différent
+        Noeud *affect = affectation();
+        testerEtAvancer(";");
+        return affect;
+    }
     else if (m_lecteur.getSymbole() == "si")
         return instSiRiche();
     else if (m_lecteur.getSymbole() == "tantque")
@@ -126,9 +161,10 @@ Noeud* Interpreteur::inst() {
         return instEcrire();
     else if (m_lecteur.getSymbole() == "lire")
         return instLire();
-    // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
+
+    
     else {
-        erreur("Instruction incorrecte");
+        erreur("Message", "Début d'instruction incorrecte");
         return nullptr;
     }
 }
@@ -181,7 +217,7 @@ Noeud* Interpreteur::facteur() {
     fact = expression();
     testerEtAvancer(")");
   } else
-    erreur("Facteur incorrect");
+    erreur("Message", "Facteur incorrect");
   return fact;
 }
 

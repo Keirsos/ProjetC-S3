@@ -111,10 +111,10 @@ NoeudInstSiRiche::NoeudInstSiRiche(std::vector<Noeud*> expressions, std::vector<
 int NoeudInstSiRiche::executer(){
     
     int i = 0;
-    while(i < m_expressions.size() && !m_expressions.at(i)->executer()){
+    while(i < m_expressions.size() && !(m_expressions.at(i)->executer())){
         i++;
     }
-    m_sequences.at(i)->executer();
+    if (i < m_expressions.size()) m_sequences.at(i)->executer();
     
     return 0;
 }

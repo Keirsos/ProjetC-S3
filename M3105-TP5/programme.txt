@@ -1,13 +1,17 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
+<<<<<<< HEAD
 ;;
 slt
     i = 15;
+=======
+>>>>>>> compilateur
     j = 0;
     m = 0;
     l = 0;
     k = 1;
+    i = 1;
     si (i>14)
         m=1;
     sinonsi (i>10)
@@ -17,22 +21,32 @@ slt
     sinon
         m=0;
     finsi
-    tantque (i<20)
+    tantque (i<=20)
+        pour (u=1;u<=2;u=u+1)
+            si (i>18)
+                ecrire(i);
+            finsi
+        finpour
         i = i+1;
-        ecrire("bite");
     fintantque
+    ecrire("normal");
     repeter
         j = j+1;
     jusqua (j==5);
+<<<<<<< HEAD
     #pour (k=1;k<=5;k=k+1)
     #    l = l+k;
     #finpour
+=======
+    pour (k=1;k<=5;k=k+1)
+        l = l+k;
+    finpour;
+>>>>>>> compilateur
     pour (;k<=5;)
         l = l+k;
         k=k+1;
     finpour
-    ecrire("k = ",k);
-# ; différent
+    #ecrire("k = ",k);
     #lire(k,kk);
     #ecrire("k = ",k);
 finproc
