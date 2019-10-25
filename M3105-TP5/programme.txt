@@ -1,11 +1,11 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
-    i = 15;
     j = 0;
     m = 0;
     l = 0;
     k = 1;
+    i = 1;
     si (i>14)
         m=1;
     sinonsi (i>10)

@@ -113,9 +113,8 @@ Noeud* Interpreteur::seqProgramme() {
                     m_lecteur.avancer();
                 }
             }
-            if (!estInstDepart()){ // tkt, on rentre dans cette boucle (si on a une inst de fin tt seule qui n'a rien à faire la), à pas modifier et pas rejoindre les 2 if
+            if (!estInstDepart()){ // On rentre dans cette boucle après le traitement du if précédent, donc ne surtout pas combiner les deux if
                 while (!estInstDepart() && m_lecteur.getSymbole() != "finproc"){
-                    cout << "alé" << endl;
                     m_lecteur.avancer();
                 }
             }
