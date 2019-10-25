@@ -32,6 +32,7 @@ private:
     const vector<string> m_listeInstDepart = {";","<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
     const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finproc","<FINDEFICHIER>"};
     bool           m_dansSousSequence = false;
+    int            m_nSequence = 0;
     
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER

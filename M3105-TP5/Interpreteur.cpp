@@ -36,7 +36,7 @@ bool Interpreteur::tester(const string & symboleAttendu) {
     if (m_lecteur.getSymbole() != symboleAttendu) {
         sprintf(messageWhat,
                 "Ligne %d - Erreur de syntaxe - Symbole attendu : %s - Symbole trouvé : %s",
-                m_lecteur.getLigne()-1, symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
+                m_lecteur.getLigne(), symboleAttendu.c_str(), m_lecteur.getSymbole().getChaine().c_str());
         cout << messageWhat << endl;
         incrErreurs();
         return false;
@@ -80,33 +80,73 @@ Noeud* Interpreteur::programme() {
 }
 
 Noeud* Interpreteur::seqInst() {
-  // <seqInst> ::= <inst> { <inst> }
-  NoeudSeqInst* sequence = new NoeudSeqInst();
-  do {
-        
-    if (estInstDepart()) sequence->ajoute(inst()); // pour la première ligne
+    // <seqInst> ::= <inst> { <inst> }
     
-    if (true){
-    if (!m_dansSousSequence && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-        if (!estInstDepart()){
-            erreur(m_lecteur.getSymbole().getChaine());
-            while (!estInstFin()){
-                m_lecteur.avancer();
-            }
-        }
+    m_nSequence++;
+    
+    if (m_nSequence > 1){
+        m_dansSousSequence = true;
+    } else {
+        m_dansSousSequence = false;
+    }
+    
+    NoeudSeqInst* sequence = new NoeudSeqInst();
+    
+    do {
 
-        if (!estInstDepart()){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
-            while (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
-                m_lecteur.avancer();
+        //cout << "1" << m_lecteur.getSymbole().getChaine() << endl;
+        
+        if (estInstDepart()) sequence->ajoute(inst()); // pour la première ligne
+
+        //cout << "2" << m_lecteur.getSymbole().getChaine() << endl;
+        
+        if (!m_dansSousSequence && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+            if (!estInstDepart()){
+                erreur(m_lecteur.getSymbole().getChaine());
+                while (!estInstFin()){
+                    m_lecteur.avancer();
+                }
+            }
+            if (!estInstDepart()){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
+                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+                    m_lecteur.avancer();
+                }
             }
         }
-    }
-    }
+        
+//        if (!estInstDepart()){
+//            if (!m_dansSousSequence && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+//                erreur(m_lecteur.getSymbole().getChaine());
+//                while (!estInstFin()){
+//                    m_lecteur.avancer();
+//                }
+//            }
+//            if (!estInstDepart() && !m_dansSousSequence){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
+//                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+//                    m_lecteur.avancer();
+//                }
+//            }
+//        }
+        
+//        if (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+//            if (!m_dansSousSequence && estInstFin()){
+//                erreur(m_lecteur.getSymbole().getChaine());
+//                while (!estInstFin()){
+//                    m_lecteur.avancer();
+//                }
+//            }
+//            if (!estInstDepart() && !m_dansSousSequence){ // tkt, on rentre dans cette boucle, à pas modifier et pas rejoindre les 2 if
+//                while (!estInstDepart() && m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+//                    m_lecteur.avancer();
+//                }
+//            }
+//        }
+
+    } while(estInstDepart()); // Tant que le symbole courant est un début possible d'instruction...
     
-  } while(estInstDepart());
-  // Tant que le symbole courant est un début possible d'instruction...
-  // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
-  return sequence;
+    m_nSequence--;
+    
+    return sequence;
 }
 
 Noeud* Interpreteur::inst() {
@@ -196,18 +236,14 @@ Noeud* Interpreteur::instTantQue() {
     testerEtAvancer("(");
     Noeud* condition = expression();
     testerEtAvancer(")");
-    m_dansSousSequence = true;
     Noeud* sequence = seqInst();
-    m_dansSousSequence = false;
     testerEtAvancer("fintantque");
     return new NoeudInstTantQue(condition, sequence);
 }
 
 Noeud* Interpreteur::instRepeter() {
     testerEtAvancer("repeter");
-    m_dansSousSequence = true;
     Noeud* sequence = seqInst();
-    m_dansSousSequence = false;
     testerEtAvancer("jusqua");
     testerEtAvancer("(");
     Noeud* condition = expression();
@@ -232,9 +268,7 @@ Noeud* Interpreteur::instPour(){
         affect2 = affectation();
     }
     testerEtAvancer(")");
-    m_dansSousSequence = true;
     Noeud* sequence = seqInst();
-    m_dansSousSequence = false;
     testerEtAvancer("finpour");
     
     return new NoeudInstPour(affect1, expre, affect2, sequence);
@@ -248,23 +282,17 @@ Noeud* Interpreteur::instSiRiche(){
     testerEtAvancer("(");
     expressions.push_back(expression());
     testerEtAvancer(")");
-    m_dansSousSequence = true;
     sequences.push_back(seqInst());
-    m_dansSousSequence = false;
     while(testerBool("sinonsi")){
         testerEtAvancer("sinonsi");
         testerEtAvancer("(");
         expressions.push_back(expression());
         testerEtAvancer(")");
-        m_dansSousSequence = true;
         sequences.push_back(seqInst());
-        m_dansSousSequence = false;
     }
     if(testerBool("sinon")){
         testerEtAvancer("sinon");
-        m_dansSousSequence = true;
         sequences.push_back(seqInst());
-        m_dansSousSequence = false;
     }
     testerEtAvancer("finsi");
     

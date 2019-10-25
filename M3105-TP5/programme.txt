@@ -16,9 +16,11 @@ procedure principale()
         m=0;
     finsi
     tantque (i<=20)
-        #pour (u=1;u<=2;u=u+1)
-        #    ecrire(i);
-        #finpour
+        pour (u=1;u<=2;u=u+1)
+            si (i>18)
+                ecrire(i);
+            finsi
+        finpour
         i = i+1;
     fintantque
     repeter
