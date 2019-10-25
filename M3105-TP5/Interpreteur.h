@@ -29,7 +29,7 @@ private:
     Noeud*         m_arbre;    // L'arbre abstrait
     
     int            m_nbErreurs;
-    const vector<string> m_listeInstDepart = {";","<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
+    const vector<string> m_listeInstDepart = {"<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
     const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finproc","<FINDEFICHIER>"};
     
     // Implémentation de la grammaire
