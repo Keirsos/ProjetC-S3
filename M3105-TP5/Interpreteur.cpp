@@ -84,9 +84,23 @@ Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
+      
+    if (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+        erreur(m_lecteur.getSymbole().getChaine());
+        while (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+            m_lecteur.avancer();
+        }
+    }
+    
     sequence->ajoute(inst());
+    
+    if (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+        erreur(m_lecteur.getSymbole().getChaine());
+        while (!estInstDepart() && m_lecteur.getSymbole() != "<FINDEFICHIER>"){
+            m_lecteur.avancer();
+        }
+    }
   } while(estInstDepart());
-  //m_lecteur.getSymbole() != "<FINDEFICHIER>"
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
@@ -94,32 +108,29 @@ Noeud* Interpreteur::seqInst() {
 
 Noeud* Interpreteur::inst() {
   // <inst>
-  if (m_lecteur.getSymbole() == "<VARIABLE>") {
-    Noeud *affect = affectation();
-    testerEtAvancer(";");
-    return affect;
-  }
-  else if (m_lecteur.getSymbole() == ";"){
-      m_lecteur.avancer();
-      return nullptr;
-  }
-  else if (m_lecteur.getSymbole() == "si")
-      return instSiRiche();
-  else if (m_lecteur.getSymbole() == "tantque")
-      return instTantQue();
-  else if (m_lecteur.getSymbole() == "repeter")
-      return instRepeter();
-  else if (m_lecteur.getSymbole() == "pour")
-      return instPour();
-  else if (m_lecteur.getSymbole() == "ecrire")
-      return instEcrire();
-  else if (m_lecteur.getSymbole() == "lire")
-      return instLire();
-  // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
-  else {
-      erreur("Instruction incorrecte");
-      return nullptr;
-  }
+    if (m_lecteur.getSymbole() == ";"){
+        m_lecteur.avancer();
+        return nullptr;
+    }
+    else if (m_lecteur.getSymbole() == "<VARIABLE>")
+        return affectation();
+    else if (m_lecteur.getSymbole() == "si")
+        return instSiRiche();
+    else if (m_lecteur.getSymbole() == "tantque")
+        return instTantQue();
+    else if (m_lecteur.getSymbole() == "repeter")
+        return instRepeter();
+    else if (m_lecteur.getSymbole() == "pour")
+        return instPour();
+    else if (m_lecteur.getSymbole() == "ecrire")
+        return instEcrire();
+    else if (m_lecteur.getSymbole() == "lire")
+        return instLire();
+    // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
+    else {
+        erreur("Instruction incorrecte");
+        return nullptr;
+    }
 }
 
 Noeud* Interpreteur::affectation() {
@@ -129,6 +140,7 @@ Noeud* Interpreteur::affectation() {
   m_lecteur.avancer();
   testerEtAvancer("=");
   Noeud* exp = expression();             // On mémorise l'expression trouvée
+  testerEtAvancer(";");
   return new NoeudAffectation(var, exp); // On renvoie un noeud affectation
 }
 
