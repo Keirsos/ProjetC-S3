@@ -176,7 +176,6 @@ Noeud* Interpreteur::affectation() {
   m_lecteur.avancer();
   testerEtAvancer("=");
   Noeud* exp = expression();             // On mémorise l'expression trouvée
-  testerEtAvancer(";");
   return new NoeudAffectation(var, exp); // On renvoie un noeud affectation
 }
 

@@ -1,12 +1,6 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
-<<<<<<< HEAD
-;;
-slt
-    i = 15;
-=======
->>>>>>> compilateur
     j = 0;
     m = 0;
     l = 0;
@@ -33,15 +27,9 @@ slt
     repeter
         j = j+1;
     jusqua (j==5);
-<<<<<<< HEAD
-    #pour (k=1;k<=5;k=k+1)
-    #    l = l+k;
-    #finpour
-=======
     pour (k=1;k<=5;k=k+1)
         l = l+k;
     finpour;
->>>>>>> compilateur
     pour (;k<=5;)
         l = l+k;
         k=k+1;
