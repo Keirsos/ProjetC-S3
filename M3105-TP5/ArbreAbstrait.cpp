@@ -118,6 +118,10 @@ int NoeudInstRepeter::executer() {
   return 0; // La valeur renvoyée ne représente rien !
 }
 
+void NoeudInstRepeter::traduitEnCPP(ostream& cout, unsigned int indentation){
+    // TODO A clarifier
+}
+
 NoeudInstPour::NoeudInstPour(Noeud* affectation1, Noeud* expression, Noeud* affectation2, Noeud* sequence)
 : m_affectation1(affectation1), m_expression(expression), m_affectation2(affectation2), m_sequence(sequence) {
 }
@@ -131,6 +135,13 @@ int NoeudInstPour::executer() {
     }
     
     return 0; // La valeur renvoyée ne représente rien !
+}
+
+void NoeudInstPour::traduitEnCPP(ostream& cout, unsigned int indentation){
+    cout << setw(4*indentation) << "" << "for(";
+    m_affectation1->traduitEnCPP(cout,indentation);
+    cout << "" << " : ";
+    m_expression->traduitEnCPP(cout,indentation);
 }
 
 NoeudInstSiRiche::NoeudInstSiRiche(std::vector<Noeud*> expressions, std::vector<Noeud*> sequences)
