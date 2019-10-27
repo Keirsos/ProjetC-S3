@@ -1,3 +1,6 @@
+include <iostream>
+using namespace std;
+
 int main() {
     int i;
     int j;
@@ -26,12 +29,12 @@ int main() {
     while(i <= 20) {
         for(u = 1 ; u <= 2 ; u = u + 1) {
             if(i > 18) {
-                std::cout << i << endl;
+                cout << i << endl;
             }
         }
         i = i + 1;
     }
-    std::cout << "normal" << endl;
+    cout << "normal" << endl;
     if(!(j == 5)) {
         do
             j = j + 1;
@@ -44,8 +47,8 @@ int main() {
         l = l + k;
         k = k + 1;
     }
-    std::cout << "k = " << k << endl;
-    std::cin >> k;
-    std::cout << "k = " << k << endl;
+    cout << "k = " << k << endl;
+    cin >> k;
+    cout << "k = " << k << endl;
     return 0;
 }

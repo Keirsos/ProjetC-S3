@@ -213,7 +213,7 @@ int NoeudInstEcrire::executer() {
 }
 
 void NoeudInstEcrire::traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) const{
-    cout << setw(4*indentation) << "" << "std::cout";
+    cout << setw(4*indentation) << "" << "cout";
     for(Noeud* noeud : m_noeuds){
         cout << " << ";
         noeud->traduitEnCPP(cout,0);
@@ -238,7 +238,7 @@ int NoeudInstLire::executer() {
 }
 
 void NoeudInstLire::traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) const{
-    cout << setw(4*indentation) << "" << "std::cin";
+    cout << setw(4*indentation) << "" << "cin";
     for(Noeud* variables : m_variables){
         cout << " >> ";
         variables->traduitEnCPP(cout,0);

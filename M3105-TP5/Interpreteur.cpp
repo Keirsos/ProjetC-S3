@@ -338,7 +338,8 @@ Noeud* Interpreteur::instLire() {
 }
 
 void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {
-    cout << setw(4*indentation)<< "" << "int main() {" << endl; //Début d'un programme C++
+    cout << setw(4*indentation) << "" << "include <iostream>" << endl << "using namespace std;" << endl << endl;
+    cout << setw(4*indentation) << "" << "int main() {" << endl; //Début d'un programme C++
     
     for(int i = 0; i<m_table.getTaille(); i++){
         if(!m_table[i].isEntier()){
