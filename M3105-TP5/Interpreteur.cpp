@@ -341,11 +341,15 @@ void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {
     cout << setw(4*indentation)<< "" << "int main() {" << endl; //Début d'un programme C++
     
     for(int i = 0; i<m_table.getTaille(); i++){
+<<<<<<< HEAD
         if(!m_table[i].isEntier()){
             cout << setw(4*(indentation+1)) << "" << "int ";
             m_table[i].traduitEnCPP(cout,0);
             cout << ";" << endl;
         }
+=======
+        cout << "int " << m_table[i].getChaine() << ";" << endl;
+>>>>>>> 12dca17273790b0d6494e1e4c3cdd76ee6628622
     }
     cout << endl;
     

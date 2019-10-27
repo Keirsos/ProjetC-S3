@@ -17,7 +17,11 @@ int SymboleValue::executer() {
   return m_valeur;
 }
 
+<<<<<<< HEAD
 void SymboleValue::traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) const{
+=======
+void SymboleValue::traduitEnCPP(ostream& cout, unsigned int indentation){
+>>>>>>> 12dca17273790b0d6494e1e4c3cdd76ee6628622
     cout << setw(4*indentation) << this->getChaine();
 }
 
