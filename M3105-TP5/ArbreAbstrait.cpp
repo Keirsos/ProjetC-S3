@@ -43,9 +43,9 @@ int NoeudAffectation::executer() {
 
 void NoeudAffectation::traduitEnCPP(ostream& cout, unsigned int indentation){
     cout << setw(4*indentation) << "";
-    m_variable->traduitEnCPP(cout,indentation);
+    m_variable->traduitEnCPP(cout,0);
     cout << " = " << "";
-    m_expression->traduitEnCPP(cout,indentation);
+    m_expression->traduitEnCPP(cout,0);
     cout << endl;
 }
 
@@ -83,9 +83,9 @@ int NoeudOperateurBinaire::executer() {
 
 void NoeudOperateurBinaire::traduitEnCPP(ostream& cout, unsigned int indentation){
     cout << setw(4*indentation) << "";
-    m_operandeGauche->traduitEnCPP(cout, indentation);
+    m_operandeGauche->traduitEnCPP(cout,0);
     cout << " " << m_operateur << " ";
-    m_operandeDroit->traduitEnCPP(cout, indentation);
+    m_operandeDroit->traduitEnCPP(cout,0);
 }
 
 NoeudInstTantQue::NoeudInstTantQue(Noeud* condition, Noeud* sequence)
@@ -99,7 +99,7 @@ int NoeudInstTantQue::executer() {
 
 void NoeudInstTantQue::traduitEnCPP(ostream& cout, unsigned int indentation){
     cout << setw(4*indentation) << "" << "while(";
-    m_condition->traduitEnCPP(cout, indentation);
+    m_condition->traduitEnCPP(cout,0);
     cout << ") {" << endl;
     m_sequence->traduitEnCPP(cout, indentation+1);
     cout << setw(4*indentation) << "" << "}" << endl;
@@ -139,9 +139,14 @@ int NoeudInstPour::executer() {
 
 void NoeudInstPour::traduitEnCPP(ostream& cout, unsigned int indentation){
     cout << setw(4*indentation) << "" << "for(";
-    m_affectation1->traduitEnCPP(cout,indentation);
-    cout << "" << " : ";
-    m_expression->traduitEnCPP(cout,indentation);
+    m_affectation1->traduitEnCPP(cout,0);
+    cout << "" << " ; ";
+    m_expression->traduitEnCPP(cout,0);
+    cout << "" << " ; ";
+    m_affectation2->traduitEnCPP(cout,0);
+    cout << "" << ") {" << endl;
+    m_sequence->traduitEnCPP(cout,indentation+1);
+    cout << setw(4*indentation) << "" << "}" << endl;
 }
 
 NoeudInstSiRiche::NoeudInstSiRiche(std::vector<Noeud*> expressions, std::vector<Noeud*> sequences)
@@ -157,6 +162,18 @@ int NoeudInstSiRiche::executer(){
     if (i < m_expressions.size()) m_sequences.at(i)->executer();
     
     return 0;
+}
+
+void NoeudInstSiRiche::traduitEnCPP(ostream& cout, unsigned int indentation){
+    cout << setw(4*indentation) << "" << "if(";
+    m_expressions[0]->traduitEnCPP(cout,0);
+    cout << ") {" << endl;
+    m_sequences[0]->traduitEnCPP(cout,indentation+1);
+    cout << setw(4*indentation) << "" << "}" << endl;
+    for(int i = 1; i<m_expressions.size(); i++){
+        cout << setw(4*indentation) << "" << "else if(";
+        m_expressions[i]->traduitEnCPP(cout,indentation+1);
+    }
 }
 
 NoeudInstEcrire::NoeudInstEcrire(vector<Noeud*> noeuds)
