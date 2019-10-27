@@ -19,7 +19,7 @@ class Noeud {
 // Remarque : la classe ne contient aucun constructeur
   public:
     virtual int executer() = 0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
-    virtual void traduitEnCPP(ostream& cout, unsigned int indentation) = 0;
+    virtual void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const = 0;
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
 };
@@ -33,7 +33,7 @@ class NoeudSeqInst : public Noeud {
      NoeudSeqInst();         // Construit une séquence d'instruction vide
     ~NoeudSeqInst() {}       // A cause du destructeur virtuel de la classe Noeud
     int executer() override; // Exécute chaque instruction de la séquence
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
     void ajoute(Noeud* instruction) override;  // Ajoute une instruction à la séquence
 
   private:
@@ -49,7 +49,8 @@ class NoeudAffectation : public Noeud {
      NoeudAffectation(Noeud* variable, Noeud* expression); // construit une affectation
     ~NoeudAffectation() {}   // A cause du destructeur virtuel de la classe Noeud
     int executer() override; // Exécute (évalue) l'expression et affecte sa valeur à la variable
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    
   private:
     Noeud* m_variable;
     Noeud* m_expression;
@@ -65,7 +66,7 @@ class NoeudOperateurBinaire : public Noeud {
     // Construit une opération binaire : operandeGauche operateur OperandeDroit
    ~NoeudOperateurBinaire() {} // A cause du destructeur virtuel de la classe Noeud
     int executer() override;   // Exécute (évalue) l'opération binaire)
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
   private:
     Symbole m_operateur;
     Noeud*  m_operandeGauche;
@@ -78,7 +79,7 @@ public :
     
     ~NoeudInstTantQue(){}
     int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
 private :
     Noeud* m_condition;
     Noeud* m_sequence;
@@ -90,7 +91,7 @@ public :
     
     ~NoeudInstRepeter(){}
     int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
 private :
     Noeud* m_sequence;
     Noeud* m_condition;
@@ -102,7 +103,7 @@ public :
     
     ~NoeudInstPour(){}
     int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
 private :
     Noeud* m_affectation1;
     Noeud* m_expression;
@@ -116,7 +117,7 @@ public :
     
     ~NoeudInstSiRiche(){}
     int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
 private :
     std::vector<Noeud*> m_expressions;
     std::vector<Noeud*> m_sequences;
@@ -128,7 +129,7 @@ public :
     
     ~NoeudInstEcrire(){}
     int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
 private :
     vector<Noeud*> m_noeuds;
 };
@@ -139,7 +140,7 @@ public :
     
     ~NoeudInstLire(){}
     int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation) override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
 private :
     vector<Noeud*> m_variables;
 };

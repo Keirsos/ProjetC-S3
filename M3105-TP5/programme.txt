@@ -34,8 +34,8 @@ procedure principale()
         l = l+k;
         k=k+1;
     finpour
-    #ecrire("k = ",k);
-    #lire(k,kk);
-    #ecrire("k = ",k);
+    ecrire("k = ",k);
+    lire(k);
+    ecrire("k = ",k);
 finproc
 # Commentaire Final

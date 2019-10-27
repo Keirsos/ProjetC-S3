@@ -341,8 +341,13 @@ void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {
     cout << setw(4*indentation)<< "" << "int main() {" << endl; //Début d'un programme C++
     
     for(int i = 0; i<m_table.getTaille(); i++){
-        cout << "int " << m_table[i] << ";" << endl;
+        if(!m_table[i].isEntier()){
+            cout << setw(4*(indentation+1)) << "" << "int ";
+            m_table[i].traduitEnCPP(cout,0);
+            cout << ";" << endl;
+        }
     }
+    cout << endl;
     
     getArbre()->traduitEnCPP(cout,indentation+1); //Lance l'opération traduitEnCPP sur la racine
     cout << setw(4*(indentation+1)) << "" << "return 0;" << endl;
