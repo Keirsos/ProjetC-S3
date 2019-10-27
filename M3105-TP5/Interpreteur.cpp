@@ -143,12 +143,6 @@ Noeud* Interpreteur::inst() {
         m_lecteur.avancer();
         return nullptr;
     }
-    else if (m_lecteur.getSymbole() == "<VARIABLE>") {
-        // à ne pas modifier, c'est normal que ce soit différent
-        Noeud *affect = affectation();
-        testerEtAvancer(";");
-        return affect;
-    }
     else if (m_lecteur.getSymbole() == "si")
         return instSiRiche();
     else if (m_lecteur.getSymbole() == "tantque")
@@ -161,7 +155,12 @@ Noeud* Interpreteur::inst() {
         return instEcrire();
     else if (m_lecteur.getSymbole() == "lire")
         return instLire();
-
+    else if (m_lecteur.getSymbole() == "<VARIABLE>") {
+        // à ne pas modifier, c'est normal que ce soit différent
+        Noeud *affect = affectation();
+        testerEtAvancer(";");
+        return affect;
+    }
     
     else {
         erreur("Message", "Début d'instruction incorrecte");
@@ -336,4 +335,16 @@ Noeud* Interpreteur::instLire() {
     testerEtAvancer(";");
     
     return new NoeudInstLire(variables);
+}
+
+void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {
+    cout << setw(4*indentation)<< "" << "int main() {" << endl; //Début d'un programme C++
+    
+    for(int i = 0; i<m_table.getTaille(); i++){
+        cout << "int " << m_table[i] << ";" << endl;
+    }
+    
+    getArbre()->traduitEnCPP(cout,indentation+1); //Lance l'opération traduitEnCPP sur la racine
+    cout << setw(4*(indentation+1)) << "" << "return 0;" << endl;
+    cout << setw(4*indentation) << "}" << endl; //FIn d'un programme C++
 }

@@ -19,7 +19,7 @@ class Noeud {
 // Remarque : la classe ne contient aucun constructeur
   public:
     virtual int executer() = 0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
-    void traduitEnCPP(ostream& cout, unsigned int indentation) = 0;
+    virtual void traduitEnCPP(ostream& cout, unsigned int indentation) = 0;
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
 };

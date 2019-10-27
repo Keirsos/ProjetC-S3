@@ -119,7 +119,15 @@ int NoeudInstRepeter::executer() {
 }
 
 void NoeudInstRepeter::traduitEnCPP(ostream& cout, unsigned int indentation){
-    // TODO A clarifier
+    cout << setw(4*indentation) << "" << "if(!";
+    m_condition->traduitEnCPP(cout,0);
+    indentation++;
+    cout << ") {" << endl << setw(4*indentation) << "do" << endl;
+    m_sequence->traduitEnCPP(cout,indentation+1);
+    cout << setw(4*indentation) << "while(!";
+    m_condition->traduitEnCPP(cout,0);
+    indentation--;
+    cout << ");" << endl << setw(4*indentation) << "" << "}" << endl;
 }
 
 NoeudInstPour::NoeudInstPour(Noeud* affectation1, Noeud* expression, Noeud* affectation2, Noeud* sequence)
@@ -172,7 +180,15 @@ void NoeudInstSiRiche::traduitEnCPP(ostream& cout, unsigned int indentation){
     cout << setw(4*indentation) << "" << "}" << endl;
     for(int i = 1; i<m_expressions.size(); i++){
         cout << setw(4*indentation) << "" << "else if(";
-        m_expressions[i]->traduitEnCPP(cout,indentation+1);
+        m_expressions[i]->traduitEnCPP(cout,0);
+        cout << ") {" << endl;
+        m_sequences[i]->traduitEnCPP(cout, indentation+1);
+        cout << setw(4*indentation) << "}" << endl;
+    }
+    if(m_sequences.size() > m_expressions.size()){
+        cout << setw(4*indentation) << "" << "else {";
+        m_sequences[m_sequences.size()]->traduitEnCPP(cout, indentation+1);
+        cout << setw(4*indentation) << "}" << endl;
     }
 }
 
@@ -197,6 +213,16 @@ int NoeudInstEcrire::executer() {
     return 0; // La valeur renvoyée ne représente rien !
 }
 
+void NoeudInstEcrire::traduitEnCPP(ostream& cout, unsigned int indentation){
+    cout << setw(4*indentation) << "" << "std::cout";
+    for(Noeud* noeud : m_noeuds){
+        cout << " << ";
+        noeud->traduitEnCPP(cout,0);
+    }
+    cout << " endl;" << endl;
+}
+
+
 NoeudInstLire::NoeudInstLire(vector<Noeud*> variables)
 : m_variables(variables) {
 }
@@ -210,4 +236,12 @@ int NoeudInstLire::executer() {
     }
     
     return 0; // La valeur renvoyée ne représente rien !
+}
+
+void NoeudInstLire::traduitEnCPP(ostream& cout, unsigned int indentation){
+    cout << setw(4*indentation) << "" << "std::cin";
+    for(Noeud* variables : m_variables){
+        cout << " >> ";
+        variables->traduitEnCPP(cout,0);
+    }
 }

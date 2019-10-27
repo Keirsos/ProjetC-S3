@@ -57,6 +57,8 @@ private:
     bool testerBool(const string & symboleAttendu) const;
     bool estInstDepart();
     bool estInstFin();
+    
+    void traduitEnCPP(ostream& cout, unsigned int indentation) const;
 };
 
 #endif /* INTERPRETEUR_H */
