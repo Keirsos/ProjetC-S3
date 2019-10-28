@@ -26,10 +26,10 @@
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt traduction.txt</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt traduction.cpp</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt traduction.txt</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" programme.txt traduction.cpp</runcommand>
+        <runcommand>"${OUTPUT_PATH}" programme.txt traduction.txt</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>

@@ -104,7 +104,7 @@ Noeud* Interpreteur::seqProgramme() {
     
     do {
         
-        if (estInstDepart()) sequence->ajoute(inst());
+        sequence->ajoute(inst());
         
         if (m_lecteur.getSymbole() != "finproc" && m_lecteur.getSymbole() != "<FINDEFICHIER>"){ // même condition que le while
             if (!estInstDepart()){
@@ -155,15 +155,15 @@ Noeud* Interpreteur::inst() {
         return instEcrire();
     else if (m_lecteur.getSymbole() == "lire")
         return instLire();
+    // ajouter ici les nouvelles instructions
     else if (m_lecteur.getSymbole() == "<VARIABLE>") {
         // à ne pas modifier, c'est normal que ce soit différent
         Noeud *affect = affectation();
         testerEtAvancer(";");
         return affect;
     }
-    
     else {
-        erreur("Message", "Début d'instruction incorrecte");
+        erreur("Message", "Première instruction de la séquence incorrecte");
         return nullptr;
     }
 }
@@ -352,5 +352,5 @@ void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {
     
     getArbre()->traduitEnCPP(cout,indentation+1); //Lance l'opération traduitEnCPP sur la racine
     cout << setw(4*(indentation+1)) << "" << "return 0;" << endl;
-    cout << setw(4*indentation) << "}" << endl; //FIn d'un programme C++
+    cout << setw(4*indentation) << "}" << endl; //Fin d'un programme C++
 }

@@ -9,11 +9,11 @@ int main() {
     int m;
     int u;
 
+    i = 15;
     j = 0;
     m = 0;
     l = 0;
     k = 1;
-    i = 1;
     if(i > 14) {
         m = 1;
     }
@@ -48,7 +48,6 @@ int main() {
         k = k + 1;
     }
     cout << "k = " << k << endl;
-    cin >> k;
     cout << "k = " << k << endl;
     return 0;
 }

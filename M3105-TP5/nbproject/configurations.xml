@@ -17,6 +17,7 @@
                    projectFiles="true">
       <itemPath>motsCles.txt</itemPath>
       <itemPath>programme.txt</itemPath>
+      <itemPath>traduction.txt</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -97,6 +98,8 @@
       </item>
       <item path="programme.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="traduction.txt" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -149,6 +152,8 @@
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="programme.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="traduction.txt" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>
