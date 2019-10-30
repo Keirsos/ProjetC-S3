@@ -1,0 +1,6 @@
+procedure principale()
+    v = 42;
+    var = 1 + 3;
+    variableNettementPlusLongue = 0;
+    variableAvec1Chiffre = v + var;
+finproc

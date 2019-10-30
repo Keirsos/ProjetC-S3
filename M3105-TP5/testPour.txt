@@ -1,0 +1,13 @@
+procedure principale()
+    var = 42;
+    pour(i = 0; i < 10 ; i = i + 1)
+        var = var + 2;
+    finpour
+
+    j = 0;
+    var2 = 0;
+    pour (;j<=5;)
+        var2 = var2 + j;
+        j = j + 1;
+    finpour
+finproc

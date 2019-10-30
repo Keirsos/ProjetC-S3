@@ -1,0 +1,19 @@
+procedure principale()
+    i = 10;
+    bool = 1;
+    res1 = 0;
+    res2 = 0;
+    si (bool == 1)
+        res1 = 42;
+    finsi
+
+    si (i < 5)
+        res2 = 1; 
+    sinonsi (i < 10)
+        res2 = 2;
+    sinonsi (i < 15)
+        res2 = 3;
+    sinon
+        res2 = 4;
+    finsi
+finproc

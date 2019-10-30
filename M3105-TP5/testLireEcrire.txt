@@ -1,0 +1,9 @@
+procedure principale()
+    ecrire("Hello World !");
+    var = 12;
+    ecrire("var = ", var);
+
+    ecrire("Saisissez une valeur : ");
+    lire(var);
+    ecrire("var = ", var);
+finproc
