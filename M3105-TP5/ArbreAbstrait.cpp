@@ -167,6 +167,7 @@ int NoeudInstSiRiche::executer(){
         i++;
     }
     if (i < m_expressions.size()) m_sequences.at(i)->executer();
+    else                          m_sequences.at(m_sequences.size()-1)->executer();
     
     return 0;
 }

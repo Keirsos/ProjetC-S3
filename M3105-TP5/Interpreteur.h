@@ -39,6 +39,10 @@ private:
     Noeud*  inst();	       //        <inst> ::= <affectation> ; | <instSi>
     Noeud*  affectation(); // <affectation> ::= <variable> = <expression> 
     Noeud*  expression();  //  <expression> ::= <facteur> { <opBinaire> <facteur> }
+    Noeud*  expEt();
+    Noeud*  expComp();
+    Noeud*  expAdd();
+    Noeud*  expMult();
     Noeud*  facteur();     //     <facteur> ::= <entier>  |  <variable>  |  - <facteur>  | non <facteur> | ( <expression> )
                            //   <opBinaire> ::= + | - | *  | / | < | > | <= | >= | == | != | et | ou
     

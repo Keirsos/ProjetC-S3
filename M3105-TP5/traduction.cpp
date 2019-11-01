@@ -2,20 +2,20 @@
 using namespace std;
 
 int main() {
-    int i;
-    int j;
     int var;
-    int var2;
 
-    var = 42;
-    for(i = 0 ; i < 10 ; i = i + 1) {
-        var = var + 2;
+    var = 1 + 2 * 2;
+    if(1 == 0 ou 1 == 1 et 0 == 1) {
+        cout << "test1" << endl;
     }
-    j = 0;
-    var2 = 0;
-    for( ; j <= 5 ; ) {
-        var2 = var2 + j;
-        j = j + 1;
+    else {
+        cout << "!test1" << endl;
+    }
+    if(1 + 2 * 2 != 5 et 1 + 6 - 4 >= 2 ou 0 == 1) {
+        cout << "test2" << endl;
+    }
+    else {
+        cout << "!test2" << endl;
     }
     return 0;
 }

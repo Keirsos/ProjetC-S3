@@ -1,0 +1,24 @@
+# Test des priorités des opérateurs
+# Résultat attendu :
+# var == 5
+#
+# affichage :
+# !test1
+
+procedure principale()
+
+    var = 1 + 2 * 2;
+
+    si (1 == 0 ou 1 == 1 et 0 == 1)
+        ecrire("test1");
+    sinon
+        ecrire("!test1");
+    finsi
+    
+    si ((1 + 2) * 2 != 5 et (1 + 6 - 4 >= 2 ou 0 == 1))
+        ecrire("test2");
+    sinon
+        ecrire("!test2");
+    finsi
+
+finproc

@@ -20,6 +20,7 @@
       <itemPath>testAffectation.txt</itemPath>
       <itemPath>testLireEcrire.txt</itemPath>
       <itemPath>testPour.txt</itemPath>
+      <itemPath>testPrioOperateurs.txt</itemPath>
       <itemPath>testRepeter.txt</itemPath>
       <itemPath>testSiRiche.txt</itemPath>
       <itemPath>testTantQue.txt</itemPath>
@@ -109,6 +110,8 @@
       </item>
       <item path="testPour.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="testPrioOperateurs.txt" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="testRepeter.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testSiRiche.txt" ex="false" tool="3" flavor2="0">
@@ -173,6 +176,8 @@
       <item path="testLireEcrire.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testPour.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="testPrioOperateurs.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testRepeter.txt" ex="false" tool="3" flavor2="0">
       </item>

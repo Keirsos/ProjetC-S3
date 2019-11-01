@@ -1,11 +1,12 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
-    i = 15;
+    i = 1;
     j = 0;
-    m = 0;
+    m = 20;
     l = 0;
     k = 1;
+    test = 15 + 6 * 3;
 
     si (i>14)
         m=1;
