@@ -1,3 +1,8 @@
+# Test du si riche
+# Résultat attendu :
+# res1 == 42
+# res2 == 3
+
 procedure principale()
     i = 10;
     bool = 1;

@@ -1,3 +1,7 @@
+# Test du repeter
+# Résultat attendu :
+# i == 10
+
 procedure principale()
     i = 0;
     repeter

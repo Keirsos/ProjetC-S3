@@ -1,3 +1,10 @@
+# Test des entrées et sorties
+# Sortie attendue :
+# Hello World !
+# var = 12
+# Saisissez une valeur : [42]
+# var = 42
+
 procedure principale()
     ecrire("Hello World !");
     var = 12;

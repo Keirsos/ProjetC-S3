@@ -32,10 +32,10 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}" testAffectation.txt traduction.cpp</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" testTantQue.txt traduction.cpp</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" testRepeter.txt traduction.cpp</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" testPour.txt traduction.cpp</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" testLireEcrire.txt traduction.cpp</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" testPour.txt traduction.cpp</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" testLireEcrire.txt traduction.cpp</runcommand>
+        <runcommand>"${OUTPUT_PATH}" testPour.txt traduction.cpp</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>

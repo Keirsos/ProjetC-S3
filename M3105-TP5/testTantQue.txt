@@ -1,3 +1,7 @@
+# Test du tantque
+# Résultat attendu :
+# i == 10
+
 procedure principale()
     i = 0;
     tantque(i < 10)

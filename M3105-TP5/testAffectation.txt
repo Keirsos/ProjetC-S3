@@ -1,3 +1,10 @@
+# Test des affectations
+# Résultat attendu :
+# v == 42
+# var == 4
+# variableNettementPlusLongue == 0
+# variableAvec1Chiffre == 46
+
 procedure principale()
     v = 42;
     var = 1 + 3;
