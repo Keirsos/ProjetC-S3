@@ -5,6 +5,6 @@
 procedure principale()
     i = 0;
     tantque(i < 10)
-        i = i + 1;
+        i = i + 1
     fintantque
 finproc

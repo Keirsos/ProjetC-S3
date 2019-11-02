@@ -53,9 +53,26 @@ void tantQueTest::testSyntaxe() {
         Interpreteur interpreteur(fichier);
         interpreteur.analyse();
         // Si pas d'exception levée, l'analyse syntaxique a réussi
+        
+        CPPUNIT_ASSERT(true);
+    } catch (InterpreteurException & e) {
+        CPPUNIT_ASSERT_MESSAGE(e.what(),false);
+    }
+}
+
+void tantQueTest::testVariables() {
+    try{
+        
+        string nomFich = "testTantQue.txt";
+        ifstream fichier(nomFich.c_str());
+        Interpreteur interpreteur(fichier);
+        interpreteur.analyse();
+        // Si pas d'exception levée, l'analyse syntaxique a réussi
         cout << endl << "================ Syntaxe Correcte" << endl;
+        
+        
         // On affiche le contenu de la table des symboles avant d'exécuter le programme
-        cout << endl << "================ Table des symboles avant exécution : " << endl;
+        cout << endl << "================ Table des symboles apres exécution :" << endl;
         //cout << interpreteur.getTable();
 //        cout << endl << "================ Execution de l'arbre" << endl;
 //        // On exécute le programme si l'arbre n'est pas vide
@@ -65,15 +82,7 @@ void tantQueTest::testSyntaxe() {
 
         CPPUNIT_ASSERT(true);
     } catch (InterpreteurException & e) {
-        cout << e.what() << endl;
-        CPPUNIT_ASSERT(false);
-    }
-}
-
-void tantQueTest::testVariables() {
-    const std::string& nom = "Bonjour je suis le salarié 2";
-    if (true /*check result*/) {
-        CPPUNIT_ASSERT(false);
+        CPPUNIT_ASSERT_MESSAGE(e.what(),false);
     }
 }
 

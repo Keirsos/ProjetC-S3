@@ -19,10 +19,10 @@
 class tantQueTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(tantQueTest);
 
-    CPPUNIT_TEST(testMethod);
-    CPPUNIT_TEST(testFailedMethod);
+//    CPPUNIT_TEST(testMethod);
+//    CPPUNIT_TEST(testFailedMethod);
     
-    //
+    /******************************/
     
     CPPUNIT_TEST(testSyntaxe);
     CPPUNIT_TEST(testVariables);
@@ -39,7 +39,7 @@ private:
     void testMethod();
     void testFailedMethod();
     
-    //
+    /******************************/
     
     void testSyntaxe();
     void testVariables();
