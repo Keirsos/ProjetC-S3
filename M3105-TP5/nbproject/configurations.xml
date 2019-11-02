@@ -40,6 +40,14 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f1"
+                     displayName="Test Inst TantQue"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tantQueTest.cpp</itemPath>
+        <itemPath>tantQueTest.h</itemPath>
+        <itemPath>tantQueTestRunner.cpp</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -70,6 +78,7 @@
       <compileType>
         <ccTool>
           <standard>8</standard>
+          <commandLine>-lcppunit</commandLine>
         </ccTool>
       </compileType>
       <item path="ArbreAbstrait.cpp" ex="false" tool="1" flavor2="0">
@@ -98,11 +107,31 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="programme.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tantQueTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tantQueTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tantQueTestRunner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="testAffectation.txt" ex="false" tool="3" flavor2="0">
       </item>
@@ -165,11 +194,31 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="programme.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tantQueTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tantQueTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tantQueTestRunner.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="testAffectation.txt" ex="false" tool="3" flavor2="0">
       </item>
