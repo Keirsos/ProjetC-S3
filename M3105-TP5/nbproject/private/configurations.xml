@@ -5,7 +5,7 @@
     <conf name="Debug" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <platform>4</platform>
+        <platform>3</platform>
       </toolsSet>
       <dbx_gdbdebugger version="1">
         <gdb_pathmaps>
@@ -13,6 +13,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -24,7 +26,6 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt traduction.txt</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" testSiRiche.txt traduction.cpp</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" testAffectation.txt traduction.cpp</runcommandpicklistitem>
@@ -34,8 +35,9 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}" testLireEcrire.txt traduction.cpp</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" programme.txt traduction.cpp</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" testPrioOperateurs.txt traduction.cpp</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" testSelon.txt traduction.cpp</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" testPrioOperateurs.txt traduction.cpp</runcommand>
+        <runcommand>"${OUTPUT_PATH}" testSelon.txt traduction.cpp</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>

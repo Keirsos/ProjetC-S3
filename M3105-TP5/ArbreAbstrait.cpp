@@ -87,8 +87,8 @@ void NoeudOperateurBinaire::traduitEnCPP(ostream& cout, unsigned int indentation
     cout << "(";
     m_operandeGauche->traduitEnCPP(cout,0);
     string operateur = m_operateur.getChaine();
-    if (operateur == "et") operateur = "&&";
-    if (operateur == "ou") operateur = "||";
+    if (operateur == "et")      operateur = "&&";
+    else if (operateur == "ou") operateur = "||";
     cout << " " << operateur << " ";
     m_operandeDroit->traduitEnCPP(cout,0);
     cout << ")";
@@ -250,4 +250,38 @@ void NoeudInstLire::traduitEnCPP(ostream& cout, unsigned int indentation, bool p
         variables->traduitEnCPP(cout,0);
         cout << ";";
     }
+}
+NoeudInstSelon::NoeudInstSelon(Noeud* var, vector<Noeud*> propales, vector<Noeud*> sequences) :
+    m_var(var),
+    m_propales(propales),
+    m_sequences(sequences)
+{}
+
+int NoeudInstSelon::executer() {
+    int i = 0;
+    while(i < m_propales.size() && m_var != m_propales[i]){
+        i++;
+    }
+    if (i < m_propales.size())  m_sequences[i]->executer();
+    else                        m_sequences[m_sequences.size()-1]->executer();
+    
+    return 0;
+}
+
+void NoeudInstSelon::traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) const{
+    cout << setw(4*indentation) << "" << "switch(";
+    m_var->traduitEnCPP(cout,0);
+    cout << ") {" << endl;
+    for(int i = 0; i < m_propales.size(); i++){
+        cout << setw(4*(indentation+1)) << "" << "case ";
+        m_propales[i]->traduitEnCPP(cout,indentation+1);
+        cout << " :" << endl;
+        m_sequences[i]->traduitEnCPP(cout, indentation+2);
+        cout << setw(4*(indentation+2)) << "" << "break;" << endl;
+    }
+    if(m_sequences.size() > m_propales.size()){
+        cout << endl << setw(4*(indentation+1)) << "" << "default :" << endl;
+        m_sequences[m_sequences.size()-1]->traduitEnCPP(cout, indentation+2);
+    }
+    cout << setw(4*indentation) << "" << "}";
 }

@@ -155,6 +155,8 @@ Noeud* Interpreteur::inst() {
         return instEcrire();
     else if (m_lecteur.getSymbole() == "lire")
         return instLire();
+    else if (m_lecteur.getSymbole() == "selon")
+        return instSelon();
     // ajouter ici les nouvelles instructions
     else if (m_lecteur.getSymbole() == "<VARIABLE>") {
         // à ne pas modifier, c'est normal que ce soit différent
@@ -179,21 +181,6 @@ Noeud* Interpreteur::affectation() {
 }
 
 Noeud* Interpreteur::expression() {
-  // <expression> ::= <facteur> { <opBinaire> <facteur> }
-  //  <opBinaire> ::= + | - | *  | / | < | > | <= | >= | == | != | et | ou
-//  Noeud* fact = facteur();
-//  while ( m_lecteur.getSymbole() == "+"  || m_lecteur.getSymbole() == "-"  ||
-//          m_lecteur.getSymbole() == "*"  || m_lecteur.getSymbole() == "/"  ||
-//          m_lecteur.getSymbole() == "<"  || m_lecteur.getSymbole() == "<=" ||
-//          m_lecteur.getSymbole() == ">"  || m_lecteur.getSymbole() == ">=" ||
-//          m_lecteur.getSymbole() == "==" || m_lecteur.getSymbole() == "!=" ||
-//          m_lecteur.getSymbole() == "et" || m_lecteur.getSymbole() == "ou"   ) {
-//    Symbole operateur = m_lecteur.getSymbole(); // On mémorise le symbole de l'opérateur
-//    m_lecteur.avancer();
-//    Noeud* factDroit = facteur(); // On mémorise l'opérande droit
-//    fact = new NoeudOperateurBinaire(operateur, fact, factDroit); // Et on construit un noeud opérateur binaire
-//  }
-//  return fact; // On renvoie fact qui pointe sur la racine de l'expression
     Noeud* fact = expEt();
     while(m_lecteur.getSymbole() == "ou"){
         Symbole operateur = m_lecteur.getSymbole();
@@ -277,6 +264,7 @@ Noeud* Interpreteur::facteur() {
 }
 
 Noeud* Interpreteur::instTantQue() {
+    // <instTantQue> ::=tantque( <expression> ) <seqInst> fintantque
     testerEtAvancer("tantque");
     testerEtAvancer("(");
     Noeud* condition = expression();
@@ -287,6 +275,7 @@ Noeud* Interpreteur::instTantQue() {
 }
 
 Noeud* Interpreteur::instRepeter() {
+    // <instRepeter> ::=repeter <seqInst> jusqua( <expression> )
     testerEtAvancer("repeter");
     Noeud* sequence = seqInst();
     testerEtAvancer("jusqua");
@@ -298,6 +287,7 @@ Noeud* Interpreteur::instRepeter() {
 }
 
 Noeud* Interpreteur::instPour(){
+    // <instPour>    ::=pour( [ <affectation> ] ; <expression> ;[ <affectation> ]) <seqInst> finpour
     Noeud* affect1 = nullptr;
     Noeud* affect2 = nullptr;
     
@@ -320,6 +310,7 @@ Noeud* Interpreteur::instPour(){
 }
 
 Noeud* Interpreteur::instSiRiche(){
+    // <instSiRiche> ::=si(<expression>) <seqInst> {sinonsi(<expression>) <seqInst> }[sinon <seqInst>]finsi
     vector<Noeud*> expressions;
     vector<Noeud*> sequences;
     
@@ -345,7 +336,7 @@ Noeud* Interpreteur::instSiRiche(){
 }
 
 Noeud* Interpreteur::instEcrire(){
-    
+    // <instEcrire>  ::=ecrire( <expression> | <chaine> {, <expression> | <chaine> })
     vector<Noeud*> noeuds;
     
     testerEtAvancer("ecrire");
@@ -372,6 +363,7 @@ Noeud* Interpreteur::instEcrire(){
 }
 
 Noeud* Interpreteur::instLire() {
+    // <instLire>    ::=lire( <variable> {, <variable> })   
     vector<Noeud*> variables;
     
     testerEtAvancer("lire");
@@ -392,6 +384,37 @@ Noeud* Interpreteur::instLire() {
     testerEtAvancer(";");
     
     return new NoeudInstLire(variables);
+}
+
+Noeud* Interpreteur::instSelon() {
+    // <instSelon> ::= selon (<variable>) {cas <entier> : <seqInst>} [defaut : <seqInst>] finselon
+    Noeud* var;
+    vector<Noeud*> propales;
+    vector<Noeud*> sequences;
+    
+    testerEtAvancer("selon");
+    testerEtAvancer("(");
+    tester("<VARIABLE>");
+    var = new SymboleValue(m_lecteur.getSymbole());
+    m_lecteur.avancer();
+    testerEtAvancer(")");
+    while(!testerBool("defaut") && !testerBool("finselon")){
+        testerEtAvancer("cas");
+        tester("<ENTIER>");
+        propales.push_back(new SymboleValue(m_lecteur.getSymbole()));
+        m_lecteur.avancer();
+        testerEtAvancer(":");
+        sequences.push_back(seqInst());
+    }
+    if(testerBool("defaut")){
+        testerEtAvancer("defaut");
+        testerEtAvancer(":");
+        sequences.push_back(seqInst());
+    }
+    testerEtAvancer("finselon");
+    
+    //return nullptr;
+    return new NoeudInstSelon(var, propales, sequences);
 }
 
 void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {

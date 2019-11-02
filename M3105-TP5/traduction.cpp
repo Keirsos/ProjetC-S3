@@ -2,21 +2,31 @@
 using namespace std;
 
 int main() {
-    int var;
+    int i;
+    int res1;
+    int res2;
 
-    var = ((1 + 2) * 2);
-    if((((1 == 0) || (1 == 1)) && (0 == 1))) {
-        cout << "test1" << endl;
+    i = 2;
+    res1 = 0;
+    res2 = 0;
+    switch(i) {
+        case        1 :
+            res1 = 5;
+            break;
+        case        2 :
+            res1 = 10;
+            break;
     }
-    else {
-        cout << "!test1" << endl;
+    switch(i) {
+        case       10 :
+            res2 = 0;
+            break;
+        case      666 :
+            res2 = 1;
+            break;
+
+        default :
+            res2 = 42;
     }
-    if(((((1 + 2) * 2) != 5) && ((((1 + 6) - 4) >= 2) || (0 == 1)))) {
-        cout << "test2" << endl;
-    }
-    else {
-        cout << "!test2" << endl;
-    }
-    cout << var << endl;
     return 0;
 }

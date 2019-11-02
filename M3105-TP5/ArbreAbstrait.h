@@ -145,4 +145,17 @@ private :
     vector<Noeud*> m_variables;
 };
 
+class NoeudInstSelon: public Noeud {
+public :
+    NoeudInstSelon(Noeud* var, vector<Noeud*> propales, vector<Noeud*> sequences);
+    
+    ~NoeudInstSelon(){}
+    int executer() override;
+    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+private :
+    Noeud* m_var;
+    vector<Noeud*> m_propales;
+    vector<Noeud*> m_sequences;
+};
+
 #endif /* ARBREABSTRAIT_H */

@@ -30,8 +30,8 @@ private:
     Lecteur        m_lecteur;  // Le lecteur de symboles utilisé pour analyser le fichier
     TableSymboles  m_table;    // La table des symboles valués
     Noeud*         m_arbre;    // L'arbre abstrait
-    const vector<string> m_listeInstDepart = {";","<VARIABLE>","si","tantque","repeter","pour","ecrire","lire"};
-    const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finproc","<FINDEFICHIER>"};
+    const vector<string> m_listeInstDepart = {";","<VARIABLE>","si","tantque","repeter","pour","ecrire","lire","selon"};
+    const vector<string> m_listeInstFin = {";","finsi","fintantque","finpour","finselon","finproc","<FINDEFICHIER>"};
     vector<int> m_lignesErreurs;
     
     // Implémentation de la grammaire
@@ -54,6 +54,7 @@ private:
     Noeud* instSiRiche();
     Noeud* instEcrire();
     Noeud* instLire();
+    Noeud* instSelon();
 
     // outils pour simplifier l'analyse syntaxique
     bool tester(const string & symboleAttendu);

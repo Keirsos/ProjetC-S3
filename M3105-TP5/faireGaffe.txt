@@ -1,0 +1,10 @@
+Si le prog ne marche pas, regarder:
+  -si on a bien rajouté le premier mot de l'instruction dans les deux fonctions SeqInst() et Inst()
+  -si on a bien vérifié/rajouté le mot clé dans motsCles.txt
+  -si on a pas oublié le return nullptr a la fin de la fonction d'instruction
+  -la définition de la classe dans ArbreAbstrait.h et les deux méthodes Constructeur et executer
+  -ne pas mettre une variable du même nom que la fonction (principalement dans la fonction inst[...] de l'Interpreteur)
+  segmentation fault:
+    -variables locales aux instructions if
+    -oublié de déclarer en nullptr
+  -si message valeur indéfinie à la fin de l'output, alors c'est qu'une variable n'est pas initialisée (genre pour tout sauf un for normal)

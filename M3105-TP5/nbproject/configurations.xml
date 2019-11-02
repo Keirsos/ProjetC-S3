@@ -22,6 +22,7 @@
       <itemPath>testPour.txt</itemPath>
       <itemPath>testPrioOperateurs.txt</itemPath>
       <itemPath>testRepeter.txt</itemPath>
+      <itemPath>testSelon.txt</itemPath>
       <itemPath>testSiRiche.txt</itemPath>
       <itemPath>testTantQue.txt</itemPath>
     </logicalFolder>
@@ -66,6 +67,33 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f1"
+                     displayName="Test Inst TantQue"
+                     projectFiles="true"
+                     kind="TEST">
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -78,7 +106,6 @@
       <compileType>
         <ccTool>
           <standard>8</standard>
-          <commandLine>-lcppunit</commandLine>
         </ccTool>
       </compileType>
       <item path="ArbreAbstrait.cpp" ex="false" tool="1" flavor2="0">
@@ -142,6 +169,8 @@
       <item path="testPrioOperateurs.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testRepeter.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="testSelon.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testSiRiche.txt" ex="false" tool="3" flavor2="0">
       </item>
@@ -229,6 +258,8 @@
       <item path="testPrioOperateurs.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testRepeter.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="testSelon.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="testSiRiche.txt" ex="false" tool="3" flavor2="0">
       </item>

@@ -1,0 +1,27 @@
+# Test du selon
+# Résultat attendu :
+# res1 == 10
+# res2 == 42
+
+procedure principale()
+    i = 2;
+    res1 = 0;
+    res2 = 0;
+
+    selon(i)
+    cas 1 :
+        res1 = 5;
+    cas 2 :
+        res1 = 10;
+    finselon
+
+    selon(i)
+    cas 10 :
+        res2 = 0;
+    cas 666 :
+        res2 = 1;
+    defaut :
+        res2 = 42;
+    finselon
+
+finproc
