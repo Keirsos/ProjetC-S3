@@ -4,12 +4,15 @@
 #
 # affichage :
 # !test1
+# test2
+# var : 5
 
 procedure principale()
+    
+    var = (1 + 2) * 2;
+    
 
-    var = 1 + 2 * 2;
-
-    si (1 == 0 ou 1 == 1 et 0 == 1)
+    si ((1 == 0 ou 1 == 1) et 0 == 1)
         ecrire("test1");
     sinon
         ecrire("!test1");
@@ -21,4 +24,5 @@ procedure principale()
         ecrire("!test2");
     finsi
 
+    ecrire(var);
 finproc

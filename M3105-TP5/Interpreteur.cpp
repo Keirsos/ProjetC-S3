@@ -252,6 +252,7 @@ Noeud* Interpreteur::expMult() {
 
 Noeud* Interpreteur::facteur() {
   // <facteur> ::= <entier> | <variable> | - <facteur> | non <facteur> | ( <expression> )
+    
   Noeud* fact = nullptr;
   if (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "<ENTIER>") {
     fact = m_table.chercheAjoute(m_lecteur.getSymbole()); // on ajoute la variable ou l'entier à la table
@@ -262,14 +263,16 @@ Noeud* Interpreteur::facteur() {
     fact = new NoeudOperateurBinaire(Symbole("-"), m_table.chercheAjoute(Symbole("0")), facteur());
   } else if (m_lecteur.getSymbole() == "non") { // non <facteur>
     m_lecteur.avancer();
-    // on représente le moins unaire (- facteur) par une soustractin binaire (0 - facteur)
+    // inversion binaire
     fact = new NoeudOperateurBinaire(Symbole("non"), facteur(), nullptr);
   } else if (m_lecteur.getSymbole() == "(") { // expression parenthésée
     m_lecteur.avancer();
     fact = expression();
     testerEtAvancer(")");
-  } else
-    erreur("Message", "Facteur incorrect");
+  } else {
+      erreur("Message", "Facteur incorrect");
+  }
+  
   return fact;
 }
 

@@ -84,9 +84,14 @@ int NoeudOperateurBinaire::executer() {
 
 void NoeudOperateurBinaire::traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) const{
     cout << setw(4*indentation) << "";
+    cout << "(";
     m_operandeGauche->traduitEnCPP(cout,0);
-    cout << " " << m_operateur.getChaine() << " ";
+    string operateur = m_operateur.getChaine();
+    if (operateur == "et") operateur = "&&";
+    if (operateur == "ou") operateur = "||";
+    cout << " " << operateur << " ";
     m_operandeDroit->traduitEnCPP(cout,0);
+    cout << ")";
 }
 
 NoeudInstTantQue::NoeudInstTantQue(Noeud* condition, Noeud* sequence)
