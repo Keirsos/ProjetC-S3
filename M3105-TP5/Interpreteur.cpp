@@ -424,7 +424,10 @@ void Interpreteur::traduitEnCPP(ostream& cout, unsigned int indentation) const {
     for(int i = 0; i<m_table.getTaille(); i++){
         if(!m_table[i].isEntier()){
             cout << setw(4*(indentation+1)) << "" << "int ";
-            m_table[i].traduitEnCPP(cout,0);
+//            Visiteur * v = new TraduitEnCPP(cout, 0);
+//            m_table[i].applique(v);
+//            delete(v);
+            m_table[i].traduitEnCPP(cout, 0);
             cout << ";" << endl;
         }
     }

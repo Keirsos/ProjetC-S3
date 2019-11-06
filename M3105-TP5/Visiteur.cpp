@@ -127,6 +127,8 @@ int Executer::visite(SymboleValue& n) const {
     return n.getValeur();
 }
 
+Executer::~Executer(){}
+
 
 TraduitEnCPP::TraduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) :
     cout(cout),
@@ -284,3 +286,4 @@ int TraduitEnCPP::visite(SymboleValue& n) const{
     return 0;
 }
 
+TraduitEnCPP::~TraduitEnCPP(){}
