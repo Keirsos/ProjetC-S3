@@ -19,10 +19,8 @@ class Noeud {
 // Classe abstraite dont dériveront toutes les classes servant à représenter l'arbre abstrait
 // Remarque : la classe ne contient aucun constructeur
   public:
-    virtual int executer() = 0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
-    virtual void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const = 0;
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
-    virtual int applique(Visiteur* v) = 0;
+    virtual int applique(Visiteur* v) const = 0;
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
 };
 
@@ -36,10 +34,8 @@ class NoeudSeqInst : public Noeud {
     ~NoeudSeqInst() {}       // A cause du destructeur virtuel de la classe Noeud
     
     inline vector<Noeud *> getInstructions() const { return m_instructions; }
-    int executer() override; // Exécute chaque instruction de la séquence
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
     void ajoute(Noeud* instruction) override;  // Ajoute une instruction à la séquence
-    inline int applique(Visiteur* v) override {
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
   private:
@@ -57,9 +53,7 @@ class NoeudAffectation : public Noeud {
     
     inline Noeud* getVariable() const { return m_variable; }
     inline Noeud* getExpression() const { return m_expression; }
-    int executer() override; // Exécute (évalue) l'expression et affecte sa valeur à la variable
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
   private:
@@ -80,9 +74,7 @@ public:
     inline Symbole getOperateur() const { return m_operateur; }
     inline Noeud* getOperandeG() const { return m_operandeGauche; }
     inline Noeud* getOperandeD() const { return m_operandeDroit; }
-    int executer() override;   // Exécute (évalue) l'opération binaire)
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private:
@@ -98,10 +90,8 @@ public :
     ~NoeudInstTantQue(){}
     
     inline Noeud* getCondition() const { return m_condition; }
-    inline Noeud* getSequence() const { return m_sequence; } 
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline Noeud* getSequence() const { return m_sequence; }
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :
@@ -116,10 +106,8 @@ public :
     ~NoeudInstRepeter(){}
     
     inline Noeud* getCondition() const { return m_condition; }
-    inline Noeud* getSequence() const { return m_sequence; } 
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline Noeud* getSequence() const { return m_sequence; }
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :
@@ -136,10 +124,8 @@ public :
     inline Noeud* getAffect1() const { return m_affectation1; }
     inline Noeud* getExpression() const { return m_expression; }
     inline Noeud* getAffect2() const { return m_affectation2; }
-    inline Noeud* getSequence() const { return m_sequence; } 
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline Noeud* getSequence() const { return m_sequence; }
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :
@@ -156,10 +142,8 @@ public :
     ~NoeudInstSiRiche(){}
     
     inline std::vector<Noeud*> getExpressions() const { return m_expressions; }
-    inline std::vector<Noeud*> getSequences() const { return m_sequences; } 
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline std::vector<Noeud*> getSequences() const { return m_sequences; }
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :
@@ -174,9 +158,7 @@ public :
     ~NoeudInstEcrire(){}
     
     inline vector<Noeud*> getNoeuds() const { return m_noeuds; }
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :
@@ -190,9 +172,7 @@ public :
     ~NoeudInstLire(){}
     
     inline vector<Noeud*> getVariables() const { return m_variables; }
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :
@@ -207,10 +187,8 @@ public :
     
     inline Noeud* getVar() const { return m_var; }
     inline std::vector<Noeud*> getPropales() const { return m_propales; } 
-    inline std::vector<Noeud*> getSequences() const { return m_sequences; } 
-    int executer() override;
-    void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    inline int applique(Visiteur* v) override {
+    inline std::vector<Noeud*> getSequences() const { return m_sequences; }
+    inline int applique(Visiteur* v) const override {
         return v->visite(*this);
     }
 private :

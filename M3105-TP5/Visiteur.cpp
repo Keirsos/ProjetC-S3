@@ -8,7 +8,7 @@ Visiteur::~Visiteur() {}
 
 Executer::Executer(){}
 
-int Executer::visite(NoeudSeqInst& n) const{
+int Executer::visite(const NoeudSeqInst& n) const{
     for (unsigned int i = 0; i < n.getInstructions().size(); i++){
         Visiteur * v = new Executer;
         n.getInstructions()[i]->applique(v);
@@ -16,14 +16,14 @@ int Executer::visite(NoeudSeqInst& n) const{
     }
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudAffectation& n) const {
+int Executer::visite(const NoeudAffectation& n) const {
     Visiteur * v = new Executer;
     int valeur = n.getExpression()->applique(v); // On exécute (évalue) l'expression
     delete(v);
     ((SymboleValue*) n.getVariable())->setValeur(valeur); // On affecte la variable
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudOperateurBinaire& n) const {
+int Executer::visite(const NoeudOperateurBinaire& n) const {
     int og, od, valeur;
     Visiteur * v = new Executer;
     if (n.getOperandeG() != nullptr) og = n.getOperandeG()->applique(v); // On évalue l'opérande gauche
@@ -48,13 +48,13 @@ int Executer::visite(NoeudOperateurBinaire& n) const {
     }
     return valeur; // On retourne la valeur calculée
 }
-int Executer::visite(NoeudInstTantQue& n) const {
+int Executer::visite(const NoeudInstTantQue& n) const {
     Visiteur * v = new Executer;
     while (n.getCondition()->applique(v)) n.getSequence()->applique(v);
     delete(v);
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudInstRepeter& n) const {
+int Executer::visite(const NoeudInstRepeter& n) const {
     Visiteur * v = new Executer;
     if(!n.getCondition()->applique(v)){
         do
@@ -64,7 +64,7 @@ int Executer::visite(NoeudInstRepeter& n) const {
     delete(v);
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudInstPour& n) const {
+int Executer::visite(const NoeudInstPour& n) const {
     Visiteur * v = new Executer;
     if(n.getAffect1() != nullptr) n.getAffect1()->applique(v);
     while(n.getExpression()->applique(v)){
@@ -74,7 +74,7 @@ int Executer::visite(NoeudInstPour& n) const {
     delete(v);
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudInstSiRiche& n) const {
+int Executer::visite(const NoeudInstSiRiche& n) const {
     Visiteur * v = new Executer;
     int i = 0;
     while(i < n.getExpressions().size() && !(n.getExpressions().at(i)->applique(v))){
@@ -85,7 +85,7 @@ int Executer::visite(NoeudInstSiRiche& n) const {
     delete(v);
     return 0;
 }
-int Executer::visite(NoeudInstEcrire& n) const {
+int Executer::visite(const NoeudInstEcrire& n) const {
     for(Noeud* noeud : n.getNoeuds()){
         if((typeid(*noeud)==typeid(SymboleValue) &&  *((SymboleValue*)noeud)== "<CHAINE>" )){
             string chaine = ((SymboleValue*)noeud)->getChaine();
@@ -102,7 +102,7 @@ int Executer::visite(NoeudInstEcrire& n) const {
     
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudInstLire& n) const {
+int Executer::visite(const NoeudInstLire& n) const {
     for(Noeud* var : n.getVariables()){
         int temp;
         cin >> temp;
@@ -111,7 +111,7 @@ int Executer::visite(NoeudInstLire& n) const {
     
     return 0; // La valeur renvoyée ne représente rien !
 }
-int Executer::visite(NoeudInstSelon& n) const {
+int Executer::visite(const NoeudInstSelon& n) const {
     int i = 0;
     while(i < n.getPropales().size() && n.getVar() != n.getPropales()[i]){
         i++;
@@ -122,7 +122,7 @@ int Executer::visite(NoeudInstSelon& n) const {
     delete(v);
     return 0;
 }
-int Executer::visite(SymboleValue& n) const {
+int Executer::visite(const SymboleValue& n) const {
     if (!n.getDefini()) throw IndefiniException(); // on lève une exception si valeur non définie
     return n.getValeur();
 }
@@ -136,7 +136,7 @@ TraduitEnCPP::TraduitEnCPP(ostream& cout, unsigned int indentation, bool pointVi
     pointVirgule(pointVirgule)
 {}
 
-int TraduitEnCPP::visite(NoeudSeqInst& n) const{
+int TraduitEnCPP::visite(const NoeudSeqInst& n) const{
     for(Noeud* noeud : n.getInstructions()){
         Visiteur * v = new TraduitEnCPP(cout, indentation);
         noeud->applique(v);
@@ -145,7 +145,7 @@ int TraduitEnCPP::visite(NoeudSeqInst& n) const{
     }
     return 0;
 }
-int TraduitEnCPP::visite(NoeudAffectation& n) const{
+int TraduitEnCPP::visite(const NoeudAffectation& n) const{
     cout << setw(4*indentation) << "";
     Visiteur * v = new TraduitEnCPP(cout, 0);
     n.getVariable()->applique(v);
@@ -155,7 +155,7 @@ int TraduitEnCPP::visite(NoeudAffectation& n) const{
     if(pointVirgule) cout << ";";
     return 0;
 }
-int TraduitEnCPP::visite(NoeudOperateurBinaire& n) const{
+int TraduitEnCPP::visite(const NoeudOperateurBinaire& n) const{
     cout << setw(4*indentation) << "";
     cout << "(";
     Visiteur * v = new TraduitEnCPP(cout, 0);
@@ -169,7 +169,7 @@ int TraduitEnCPP::visite(NoeudOperateurBinaire& n) const{
     cout << ")";
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstTantQue& n) const{
+int TraduitEnCPP::visite(const NoeudInstTantQue& n) const{
     cout << setw(4*indentation) << "" << "while(";
     Visiteur * v = new TraduitEnCPP(cout, 0);
     n.getCondition()->applique(v);
@@ -181,7 +181,7 @@ int TraduitEnCPP::visite(NoeudInstTantQue& n) const{
     cout << setw(4*indentation) << "" << "}";
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstRepeter& n) const{
+int TraduitEnCPP::visite(const NoeudInstRepeter& n) const{
     cout << setw(4*indentation) << "" << "if(!(";
     Visiteur * v = new TraduitEnCPP(cout, 0);
     n.getCondition()->applique(v);
@@ -195,7 +195,7 @@ int TraduitEnCPP::visite(NoeudInstRepeter& n) const{
     cout << "));" << endl << setw(4*indentation) << "" << "}";
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstPour& n) const{
+int TraduitEnCPP::visite(const NoeudInstPour& n) const{
     cout << setw(4*indentation) << "" << "for(";
     Visiteur * v = new TraduitEnCPP(cout, 0, false);
     if(n.getAffect1() != nullptr) n.getAffect1()->applique(v);
@@ -213,7 +213,7 @@ int TraduitEnCPP::visite(NoeudInstPour& n) const{
     cout << setw(4*indentation) << "" << "}";
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstSiRiche& n) const{
+int TraduitEnCPP::visite(const NoeudInstSiRiche& n) const{
     cout << setw(4*indentation) << "" << "if(";
     Visiteur * v = new TraduitEnCPP(cout, 0);
     Visiteur * v2 = new TraduitEnCPP(cout, indentation+1);
@@ -236,7 +236,7 @@ int TraduitEnCPP::visite(NoeudInstSiRiche& n) const{
     delete(v); delete(v2);
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstEcrire& n) const{
+int TraduitEnCPP::visite(const NoeudInstEcrire& n) const{
     cout << setw(4*indentation) << "" << "cout";
     for(Noeud* noeud : n.getNoeuds()){
         cout << " << ";
@@ -247,7 +247,7 @@ int TraduitEnCPP::visite(NoeudInstEcrire& n) const{
     cout << " << endl;";
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstLire& n) const{
+int TraduitEnCPP::visite(const NoeudInstLire& n) const{
     cout << setw(4*indentation) << "" << "cin";
     for(Noeud* variables : n.getVariables()){
         cout << " >> ";
@@ -258,7 +258,7 @@ int TraduitEnCPP::visite(NoeudInstLire& n) const{
     }
     return 0;
 }
-int TraduitEnCPP::visite(NoeudInstSelon& n) const{
+int TraduitEnCPP::visite(const NoeudInstSelon& n) const{
     cout << setw(4*indentation) << "" << "switch(";
     Visiteur * v = new TraduitEnCPP(cout, 0);
     n.getVar()->applique(v);
@@ -281,7 +281,7 @@ int TraduitEnCPP::visite(NoeudInstSelon& n) const{
     delete(v); delete(v2);
     return 0;
 }
-int TraduitEnCPP::visite(SymboleValue& n) const{
+int TraduitEnCPP::visite(const SymboleValue& n) const{
     cout << setw(4*indentation) << n.getChaine();
     return 0;
 }
