@@ -41,6 +41,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Symbole.o \
 	${OBJECTDIR}/SymboleValue.o \
 	${OBJECTDIR}/TableSymboles.o \
+	${OBJECTDIR}/Visiteur.o \
 	${OBJECTDIR}/main.o
 
 # Test Directory
@@ -108,6 +109,11 @@ ${OBJECTDIR}/TableSymboles.o: TableSymboles.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/TableSymboles.o TableSymboles.cpp
+
+${OBJECTDIR}/Visiteur.o: Visiteur.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Visiteur.o Visiteur.cpp
 
 ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -214,6 +220,19 @@ ${OBJECTDIR}/TableSymboles_nomain.o: ${OBJECTDIR}/TableSymboles.o TableSymboles.
 	    $(COMPILE.cc) -g -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/TableSymboles_nomain.o TableSymboles.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/TableSymboles.o ${OBJECTDIR}/TableSymboles_nomain.o;\
+	fi
+
+${OBJECTDIR}/Visiteur_nomain.o: ${OBJECTDIR}/Visiteur.o Visiteur.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Visiteur.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Visiteur_nomain.o Visiteur.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Visiteur.o ${OBJECTDIR}/Visiteur_nomain.o;\
 	fi
 
 ${OBJECTDIR}/main_nomain.o: ${OBJECTDIR}/main.o main.cpp 

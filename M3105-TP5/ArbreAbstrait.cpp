@@ -121,7 +121,7 @@ int NoeudInstRepeter::executer() {
             m_sequence->executer();
         while(!m_condition->executer());
     }
-  return 0; // La valeur renvoyée ne représente rien !
+    return 0; // La valeur renvoyée ne représente rien !
 }
 
 void NoeudInstRepeter::traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule) const{

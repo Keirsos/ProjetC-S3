@@ -11,6 +11,7 @@ using namespace std;
 
 #include "Symbole.h"
 #include "Exceptions.h"
+#include "Visiteur.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -21,6 +22,7 @@ class Noeud {
     virtual int executer() = 0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
     virtual void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const = 0;
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
+    virtual int applique(Visiteur* v) = 0;
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
 };
 
@@ -32,10 +34,14 @@ class NoeudSeqInst : public Noeud {
   public:
      NoeudSeqInst();         // Construit une séquence d'instruction vide
     ~NoeudSeqInst() {}       // A cause du destructeur virtuel de la classe Noeud
+    
+    inline vector<Noeud *> getInstructions() const { return m_instructions; }
     int executer() override; // Exécute chaque instruction de la séquence
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
     void ajoute(Noeud* instruction) override;  // Ajoute une instruction à la séquence
-
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
   private:
     vector<Noeud *> m_instructions; // pour stocker les instructions de la séquence
 };
@@ -48,9 +54,14 @@ class NoeudAffectation : public Noeud {
   public:
      NoeudAffectation(Noeud* variable, Noeud* expression); // construit une affectation
     ~NoeudAffectation() {}   // A cause du destructeur virtuel de la classe Noeud
+    
+    inline Noeud* getVariable() const { return m_variable; }
+    inline Noeud* getExpression() const { return m_expression; }
     int executer() override; // Exécute (évalue) l'expression et affecte sa valeur à la variable
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-    
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
   private:
     Noeud* m_variable;
     Noeud* m_expression;
@@ -61,13 +72,20 @@ class NoeudAffectation : public Noeud {
 class NoeudOperateurBinaire : public Noeud {
 // Classe pour représenter un noeud "opération binaire" composé d'un opérateur
 //  et de 2 fils : l'opérande gauche et l'opérande droit
-  public:
+public:
     NoeudOperateurBinaire(Symbole operateur, Noeud* operandeGauche, Noeud* operandeDroit);
     // Construit une opération binaire : operandeGauche operateur OperandeDroit
-   ~NoeudOperateurBinaire() {} // A cause du destructeur virtuel de la classe Noeud
+    ~NoeudOperateurBinaire() {} // A cause du destructeur virtuel de la classe Noeud
+
+    inline Symbole getOperateur() const { return m_operateur; }
+    inline Noeud* getOperandeG() const { return m_operandeGauche; }
+    inline Noeud* getOperandeD() const { return m_operandeDroit; }
     int executer() override;   // Exécute (évalue) l'opération binaire)
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
-  private:
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
+private:
     Symbole m_operateur;
     Noeud*  m_operandeGauche;
     Noeud*  m_operandeDroit;
@@ -78,8 +96,14 @@ public :
     NoeudInstTantQue(Noeud* condition, Noeud* sequence);
     
     ~NoeudInstTantQue(){}
+    
+    inline Noeud* getCondition() const { return m_condition; }
+    inline Noeud* getSequence() const { return m_sequence; } 
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     Noeud* m_condition;
     Noeud* m_sequence;
@@ -90,8 +114,14 @@ public :
     NoeudInstRepeter(Noeud* sequence, Noeud* condition);
     
     ~NoeudInstRepeter(){}
+    
+    inline Noeud* getCondition() const { return m_condition; }
+    inline Noeud* getSequence() const { return m_sequence; } 
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     Noeud* m_sequence;
     Noeud* m_condition;
@@ -102,8 +132,16 @@ public :
     NoeudInstPour(Noeud* affectation1, Noeud* expression, Noeud* affectation2, Noeud* sequence);
     
     ~NoeudInstPour(){}
+    
+    inline Noeud* getAffect1() const { return m_affectation1; }
+    inline Noeud* getExpression() const { return m_expression; }
+    inline Noeud* getAffect2() const { return m_affectation2; }
+    inline Noeud* getSequence() const { return m_sequence; } 
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     Noeud* m_affectation1;
     Noeud* m_expression;
@@ -116,8 +154,14 @@ public :
     NoeudInstSiRiche(std::vector<Noeud*> expressions, std::vector<Noeud*> sequences);
     
     ~NoeudInstSiRiche(){}
+    
+    inline std::vector<Noeud*> getExpressions() const { return m_expressions; }
+    inline std::vector<Noeud*> getSequences() const { return m_sequences; } 
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     std::vector<Noeud*> m_expressions;
     std::vector<Noeud*> m_sequences;
@@ -128,8 +172,13 @@ public :
     NoeudInstEcrire(vector<Noeud*> noeuds);
     
     ~NoeudInstEcrire(){}
+    
+    inline vector<Noeud*> getNoeuds() const { return m_noeuds; }
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     vector<Noeud*> m_noeuds;
 };
@@ -139,8 +188,13 @@ public :
     NoeudInstLire(vector<Noeud*> variables);
     
     ~NoeudInstLire(){}
+    
+    inline vector<Noeud*> getVariables() const { return m_variables; }
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     vector<Noeud*> m_variables;
 };
@@ -150,8 +204,15 @@ public :
     NoeudInstSelon(Noeud* var, vector<Noeud*> propales, vector<Noeud*> sequences);
     
     ~NoeudInstSelon(){}
+    
+    inline Noeud* getVar() const { return m_var; }
+    inline std::vector<Noeud*> getPropales() const { return m_propales; } 
+    inline std::vector<Noeud*> getSequences() const { return m_sequences; } 
     int executer() override;
     void traduitEnCPP(ostream& cout, unsigned int indentation, bool pointVirgule = true) const override;
+    inline int applique(Visiteur* v) override {
+        return v->visite(*this);
+    }
 private :
     Noeud* m_var;
     vector<Noeud*> m_propales;
