@@ -1,11 +1,12 @@
 #include "SymboleValue.h"
 #include "Exceptions.h"
+#include "Valeur.h"
 #include <stdlib.h>
 
 SymboleValue::SymboleValue(const Symbole & s) :
 Symbole(s.getChaine()) {
   if (s == "<ENTIER>") {
-    m_valeur = atoi(s.getChaine().c_str()); // c_str convertit une string en char*
+    m_valeur->setValeur(atoi(s.getChaine().c_str())); // c_str convertit une string en char*
     m_defini = true;
   } else {
     m_defini = false;
@@ -14,7 +15,7 @@ Symbole(s.getChaine()) {
 
 ostream & operator<<(ostream & cout, const SymboleValue & symbole) {
   cout << (Symbole) symbole << "\t\t - Valeur=";
-  if (symbole.m_defini) cout << symbole.m_valeur << " ";
+  if (symbole.m_defini) cout << symbole.m_valeur->getValeur() << " ";
   else cout << "indefinie ";
   return cout;
 }

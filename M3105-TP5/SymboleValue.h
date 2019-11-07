@@ -15,8 +15,8 @@ public:
 	  ~SymboleValue( ) {}
           
           inline bool getDefini() const { return m_defini; }
-          inline int getValeur() const { return m_valeur; }
-	  inline void setValeur(int valeur)    { this->m_valeur=valeur; m_defini=true;  } // accesseur
+          inline int getValeur() const { return m_valeur->getValeur(); }
+	  inline void setValeur(int valeur)    { this->m_valeur->setValeur(valeur); m_defini=true;  } // accesseur
 	  inline bool estDefini()              { return m_defini;                       } // accesseur
           inline int applique(Visiteur* v) const override {
               return v->visite(*this);
@@ -25,7 +25,7 @@ public:
 
 private:
 	  bool m_defini;	// indique si la valeur du symbole est définie
-	  int  m_valeur;	// valeur du symbole si elle est définie, zéro sinon
+	  Valeur *  m_valeur;	// valeur du symbole si elle est définie, zéro sinon
 
 };
 

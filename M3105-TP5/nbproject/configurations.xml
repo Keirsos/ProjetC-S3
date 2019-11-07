@@ -11,6 +11,7 @@
       <itemPath>Symbole.h</itemPath>
       <itemPath>SymboleValue.h</itemPath>
       <itemPath>TableSymboles.h</itemPath>
+      <itemPath>Valeur.h</itemPath>
       <itemPath>Visiteur.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -36,6 +37,7 @@
       <itemPath>Symbole.cpp</itemPath>
       <itemPath>SymboleValue.cpp</itemPath>
       <itemPath>TableSymboles.cpp</itemPath>
+      <itemPath>Valeur.cpp</itemPath>
       <itemPath>Visiteur.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -136,6 +138,10 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Valeur.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Valeur.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Visiteur.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Visiteur.h" ex="false" tool="3" flavor2="0">
@@ -228,6 +234,10 @@
       <item path="TableSymboles.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Valeur.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Valeur.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Visiteur.cpp" ex="false" tool="1" flavor2="0">
       </item>
