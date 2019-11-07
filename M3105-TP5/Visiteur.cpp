@@ -75,14 +75,22 @@ int Executer::visite(const NoeudInstPour& n) const {
     return 0; // La valeur renvoyée ne représente rien !
 }
 int Executer::visite(const NoeudInstSiRiche& n) const {
+    
     Visiteur * v = new Executer;
     int i = 0;
-    while(i < n.getExpressions().size() && !(n.getExpressions().at(i)->applique(v))){
+    while(i < n.getExpressions().size() && !(n.getExpressions().at(i)->applique(v))){ //On cherche une condition vérifiée
         i++;
     }
-    if (i < n.getExpressions().size()) n.getSequences().at(i)->applique(v);
-    else                               n.getSequences().at(n.getSequences().size()-1)->applique(v);
+    if (i < n.getExpressions().size()){ // si on a trouvé une condition true
+        n.getSequences()[i]->applique(v); // on l'exécute
+    }
+    else {
+        if (n.getSequences().size() > n.getExpressions().size()){ // si on a rien trouvé de true, on vérifie si il y a un sinon
+            n.getSequences()[n.getSequences().size()-1]->applique(v); // si oui on l'exécute
+        } // si non, on a terminé le if et on a rien à exécuter
+    }
     delete(v);
+    
     return 0;
 }
 int Executer::visite(const NoeudInstEcrire& n) const {
