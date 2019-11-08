@@ -60,6 +60,21 @@ void tantQueTest::testSyntaxe() {
     }
 }
 
+void tantQueTest::testNombreErreurs() {
+    string nomFich = "testTantQueErreurs.txt"; // 3 erreurs volontaires
+    ifstream fichier(nomFich.c_str());
+    Interpreteur interpreteur(fichier);
+    
+    try{
+        interpreteur.analyse();
+        // Si pas d'exception levée, l'analyse syntaxique a réussi (ce n'est pas ce que l'on veut)
+        
+        CPPUNIT_ASSERT(false);
+    } catch (InterpreteurException & e) {
+        CPPUNIT_ASSERT_EQUAL(3, interpreteur.getNbErreurs());
+    }
+}
+
 void tantQueTest::testVariables() {
     try{
         
@@ -68,19 +83,17 @@ void tantQueTest::testVariables() {
         Interpreteur interpreteur(fichier);
         interpreteur.analyse();
         // Si pas d'exception levée, l'analyse syntaxique a réussi
-        cout << endl << "================ Syntaxe Correcte" << endl;
         
+        // On exécute le programme si l'arbre n'est pas vide
+        Visiteur * v = new Executer();
+        if (interpreteur.getArbre() != nullptr){
+            interpreteur.getArbre()->applique(v);
+            delete(v);
+        }
         
-        // On affiche le contenu de la table des symboles avant d'exécuter le programme
-        cout << endl << "================ Table des symboles apres exécution :" << endl;
-        //cout << interpreteur.getTable();
-//        cout << endl << "================ Execution de l'arbre" << endl;
-//        // On exécute le programme si l'arbre n'est pas vide
-//        if (interpreteur.getArbre() != nullptr) interpreteur.getArbre()->executer();
-//        // Et on vérifie qu'il a fonctionné en regardant comment il a modifié la table des symboles
-//        cout << endl << "================ Table des symboles apres exécution : " << interpreteur.getTable();
-
-        CPPUNIT_ASSERT(true);
+        const Symbole* i = new Symbole("i");
+        
+        CPPUNIT_ASSERT_EQUAL(10, (interpreteur.getTable().chercheAjoute(*i))->applique(v)); // i est censé etre égal à 10, on le vérifie
     } catch (InterpreteurException & e) {
         CPPUNIT_ASSERT_MESSAGE(e.what(),false);
     }

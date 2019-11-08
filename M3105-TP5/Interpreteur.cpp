@@ -57,6 +57,7 @@ void Interpreteur::erreur(const string & type, const string & str) {
   if (!erreurSurLigne(m_lecteur.getLigne())){
         m_lignesErreurs.push_back(m_lecteur.getLigne());
         cout << messageWhat << endl;
+        //cout << messageWhat;
     }
 }
 
@@ -92,7 +93,7 @@ Noeud* Interpreteur::programme() {
   
   if (!m_lignesErreurs.empty()){
     static char messageErreur[256];
-    sprintf(messageErreur, "%ld erreurs trouvées, arrêt du programme", m_lignesErreurs.size());
+    sprintf(messageErreur, "%ld erreurs trouvées, arrêt du programme", getNbErreurs());
     throw SyntaxeException(messageErreur);
   }
   

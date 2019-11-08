@@ -20,8 +20,9 @@ public:
                                       //   la table des symboles (ts) et l'arbre abstrait (arbre) auront été construits
 	                                    // Sinon, une exception sera levée
 
-	inline const TableSymboles & getTable () const  { return m_table;    } // accesseur	
+	inline TableSymboles & getTable ()  { return m_table;    } // accesseur	
 	inline Noeud* getArbre () const { return m_arbre; }                    // accesseur
+        inline int getNbErreurs () const { return m_lignesErreurs.size(); }
         
         void traduitEnCPP(ostream& cout, unsigned int indentation) const;
 

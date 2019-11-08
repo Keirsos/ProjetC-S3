@@ -25,6 +25,7 @@ class tantQueTest : public CPPUNIT_NS::TestFixture {
     /******************************/
     
     CPPUNIT_TEST(testSyntaxe);
+    CPPUNIT_TEST(testNombreErreurs);
     CPPUNIT_TEST(testVariables);
 
     CPPUNIT_TEST_SUITE_END();
@@ -42,6 +43,7 @@ private:
     /******************************/
     
     void testSyntaxe();
+    void testNombreErreurs();
     void testVariables();
 };
 
