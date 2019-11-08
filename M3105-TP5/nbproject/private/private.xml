@@ -16,7 +16,17 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/SpaGetti/git/ProjetC-S3/M3105-TP5/main.cpp</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/Interpreteur.cpp</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/Visiteur.cpp</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/Interpreteur.h</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/testTantQue.txt</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/testTantQueErreurs.txt</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/tantQueTest.h</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/ArbreAbstrait.cpp</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/main.cpp</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/tantQueTest.cpp</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/Visiteur.h</file>
+            <file>file:/Users/Flavien/c++/git/ProjetC-S3/M3105-TP5/SymboleValue.h</file>
         </group>
     </open-files>
 </project-private>

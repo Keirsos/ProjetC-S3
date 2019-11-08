@@ -1,0 +1,3 @@
+Depuis la présentation, on a:
+  - Réctifié les tests unitaires
+  - Mis en place le pattern visitor au complet
